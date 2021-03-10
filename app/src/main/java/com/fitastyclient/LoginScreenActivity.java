@@ -1,11 +1,13 @@
 package com.fitastyclient;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginScreenActivity extends AppCompatActivity {
 
     private View.OnClickListener loginButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void tryToLogin(String username, String password) {
         if (checkIfValidUser(username, password)) {
-            Utils.log("login succeeded");
+            startActivity(new Intent(LoginScreenActivity.this, MainMenuActivity.class));
         } else {
             Utils.log("login failed");
         }
@@ -43,9 +45,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_screen);
         setComponents();
-
     }
 
 }

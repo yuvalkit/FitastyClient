@@ -2,6 +2,12 @@
     <string name="app_name">FitastyClient</string>
     <string name="username_text">Username:</string>
     <string name="password_text">Password:</string>
-    <string name="login_text">Login</string>
+    <string name="login_text">LOGIN</string>
     <string name="create_new_account_text">Create New Account</string>
+
+    <string name="new_ingredient_text">Add new ingredient</string>
+    <string name="new_dish_text">Add new dish</string>
+    <string name="my_menus_text">My menus</string>
+    <string name="settings_text">Settings</string>
+    <string name="log_out_text">LOG OUT</string>
 </resources>
