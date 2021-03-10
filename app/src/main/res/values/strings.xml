@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FitastyClient</string>
+    <string name="username_text">Username:</string>
+    <string name="password_text">Password:</string>
+    <string name="login_text">Login</string>
+    <string name="create_new_account_text">Create New Account</string>
 </resources>
