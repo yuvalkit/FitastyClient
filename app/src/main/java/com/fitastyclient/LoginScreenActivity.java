@@ -1,11 +1,18 @@
 package com.fitastyclient;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginScreenActivity extends AppCompatActivity {
 
@@ -25,16 +32,47 @@ public class LoginScreenActivity extends AppCompatActivity {
         }
     };
 
-    private void tryToLogin(String username, String password) {
-        if (checkIfValidUser(username, password)) {
-            startActivity(new Intent(LoginScreenActivity.this, MainMenuActivity.class));
-        } else {
-            Utils.log("login failed");
-        }
+    private void startMainMenuActivity(String username) {
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("username", username);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
-    private boolean checkIfValidUser(String username, String password) {
-        return username.equals("aaa") && password.equals("123");
+    private void tryToLogin(final String username, String password) {
+        if (username.isEmpty() || password.isEmpty()) {
+            Utils.log("please enter username and password");
+            return;
+        }
+        HttpManager.getRetrofitApi().isCorrectUsernameAndPassword(username, password)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                assert response.body() != null;
+                                JSONObject jsonObject = new JSONObject(response.body().string());
+                                String found = jsonObject.getString("found");
+                                if (found.equals("True")) {
+                                    startMainMenuActivity(username);
+                                } else {
+                                    Utils.log("wrong username or password");
+                                }
+                            } catch (IOException | JSONException e) {
+                                Utils.log("bad response");
+                            }
+                        } else {
+                            Utils.log("bad response");
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call,
+                                          @NonNull Throwable t) {
+                        Utils.log("request failed");
+                    }
+                });
     }
 
     private void setComponents() {
@@ -48,5 +86,4 @@ public class LoginScreenActivity extends AppCompatActivity {
         setContentView(R.layout.login_screen);
         setComponents();
     }
-
 }
