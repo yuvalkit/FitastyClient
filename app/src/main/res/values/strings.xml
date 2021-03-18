@@ -1,15 +1,30 @@
 <resources>
-    <!--  login_screen strings  -->
+    <!--  login_layout strings  -->
     <string name="app_name">FitastyClient</string>
     <string name="username_text">Username:</string>
     <string name="password_text">Password:</string>
     <string name="login_text">LOGIN</string>
     <string name="create_new_account_text">Create New Account</string>
-    <!--  main_menu strings  -->
+    <!--  main_menu_layout strings  -->
     <string name="new_ingredient_text">Add new ingredient</string>
     <string name="new_dish_text">Add new dish</string>
     <string name="my_menus_text">My menus</string>
     <string name="settings_text">Settings</string>
     <string name="log_out_text">LOG OUT</string>
     <string name="hello_text">Hello !</string>
+    <!--  new_account_layout_temp strings  -->
+    <string name="cancel">Cancel</string>
+    <string name="check">Check</string>
+    <string name="create">Create</string>
+    <string name="gender">Gender:</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="age">Age:</string>
+    <string name="height">Height:</string>
+    <string name="cm">cm</string>
+    <string name="weight">Weight:</string>
+    <string name="kg">kg</string>
+    <string name="activity_text">How active are you?</string>
+    <string name="goal_text">What is your weight goal?</string>
+    <string name="diet_type_text">What is your preferred diet type?</string>
 </resources>

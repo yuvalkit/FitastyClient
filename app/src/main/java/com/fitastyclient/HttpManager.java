@@ -1,6 +1,7 @@
 package com.fitastyclient;
 
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpManager {
 
@@ -9,6 +10,7 @@ public class HttpManager {
     static public Api getRetrofitApi() {
         return new Retrofit.Builder()
                 .baseUrl(HttpManager.serverUrl)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(Api.class);
     }

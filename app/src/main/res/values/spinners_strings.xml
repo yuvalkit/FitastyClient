@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="activity_spinner_array">
+        <item>Sedentary (little or no exercise)</item>
+        <item>Light (exercise 1–3 days/week)</item>
+        <item>Moderate (exercise 3–5 days/week)</item>
+        <item>Very (exercise 6–7 days/week)</item>
+        <item>Extra (very intense exercise daily)</item>
+    </string-array>
+
+    <string-array name="goal_spinner_array">
+        <item>Extreme loss (lose 1 kg/week)</item>
+        <item>Fast loss (lose 0.75 kg/week)</item>
+        <item>Moderate loss (lose 0.5 kg/week)</item>
+        <item>Mild loss (lose 0.25 kg/week)</item>
+        <item>Maintain weight</item>
+        <item>Mild gain (gain 0.25 kg/week)</item>
+        <item>Moderate gain (gain 0.5 kg/week)</item>
+        <item>Fast gain (gain 0.75 kg/week)</item>
+        <item>Extreme gain (gain 1 kg/week)</item>
+    </string-array>
+
+    <string-array name="diet_type_spinner_array">
+        <item>Low carb diet</item>
+        <item>Default: Moderate carb diet</item>
+        <item>High carb diet</item>
+    </string-array>
+</resources>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -16,10 +17,14 @@ import retrofit2.Response;
 
 public class LoginScreenActivity extends AppCompatActivity {
 
+    static public String mustEnterFields = "You must enter username and password.";
+    static public String loginFailed = "Login failed, please try again.";
+    static public String wrongFields = "Wrong username or password.";
+
     private View.OnClickListener loginButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            EditText usernameView = findViewById(R.id.usernameInputBar);
-            EditText passwordView = findViewById(R.id.passwordInputBar);
+            EditText usernameView = findViewById(R.id.loginLayoutUsernameInput);
+            EditText passwordView = findViewById(R.id.loginLayoutPasswordInput);
             String username = usernameView.getText().toString();
             String password = passwordView.getText().toString();
             tryToLogin(username, password);
@@ -28,23 +33,20 @@ public class LoginScreenActivity extends AppCompatActivity {
 
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            Utils.log("create new account");
+            startActivity(new Intent(LoginScreenActivity.this, NewAccountActivity.class));
         }
     };
 
     private void startMainMenuActivity(String username) {
-        Intent intent = new Intent(this, MainMenuActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("username", username);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        startActivity(MainMenuActivity.getMainMenuIntent(this, username));
     }
 
     private void tryToLogin(final String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
-            Utils.log("please enter username and password");
+            setLoginInformationText(mustEnterFields);
             return;
         }
+        final String loginFailedText = loginFailed;
         HttpManager.getRetrofitApi().isCorrectUsernameAndPassword(username, password)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -54,25 +56,39 @@ public class LoginScreenActivity extends AppCompatActivity {
                             try {
                                 assert response.body() != null;
                                 JSONObject jsonObject = new JSONObject(response.body().string());
-                                String found = jsonObject.getString("found");
-                                if (found.equals("True")) {
+                                boolean found = jsonObject.getBoolean(Utils.FOUND);
+                                if (found) {
+                                    setLoginInformationText(Utils.EMPTY);
                                     startMainMenuActivity(username);
                                 } else {
-                                    Utils.log("wrong username or password");
+                                    setLoginInformationText(wrongFields);
                                 }
                             } catch (IOException | JSONException e) {
-                                Utils.log("bad response");
+                                setLoginInformationText(loginFailedText);
                             }
                         } else {
-                            Utils.log("bad response");
+                            setLoginInformationText(loginFailedText);
                         }
                     }
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
-                        Utils.log("request failed");
+                        setLoginInformationText(loginFailedText);
                     }
                 });
+    }
+
+    private void setLoginInformationText(String text) {
+        TextView view = findViewById(R.id.loginInformationText);
+        view.setTextColor(getResources().getColor(R.color.red));
+        view.setText(text);
+    }
+
+    private void clearAllTexts() {
+        String empty = "";
+        ((TextView) findViewById(R.id.loginLayoutUsernameInput)).setText(empty);
+        ((TextView) findViewById(R.id.loginLayoutPasswordInput)).setText(empty);
+        ((TextView) findViewById(R.id.loginInformationText)).setText(empty);
     }
 
     private void setComponents() {
@@ -83,7 +99,13 @@ public class LoginScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_screen);
+        setContentView(R.layout.login_layout);
         setComponents();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clearAllTexts();
     }
 }
