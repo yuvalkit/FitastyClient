@@ -26,6 +26,8 @@
     <string name="activity_text">How active are you?</string>
     <string name="goal_text">What is your weight goal?</string>
     <string name="diet_type_text">What is your preferred diet type?</string>
+    <!--  add_ingredient_layout strings  -->
+
     <!--  settings_layout strings  -->
     <string name="edit_account">Edit Account</string>
 

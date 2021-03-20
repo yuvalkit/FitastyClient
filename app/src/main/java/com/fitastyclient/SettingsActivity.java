@@ -35,7 +35,12 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
-    private void displayActionFailed() {
+    private void clearEditAccountInformation() {
+        TextView view = findViewById(R.id.editAccountInformationText);
+        view.setText(Utils.EMPTY);
+    }
+
+    private void displayEditAccountFailed() {
         TextView view = findViewById(R.id.editAccountInformationText);
         view.setTextColor(getResources().getColor(R.color.red));
         view.setText(actionFailed);
@@ -63,17 +68,18 @@ public class SettingsActivity extends AppCompatActivity {
                                         response.body().string(), Account.class);
                                 account.setUsername(username);
                                 startNewAccountActivity(account);
+                                clearEditAccountInformation();
                             } catch (Exception e) {
-                                displayActionFailed();
+                                displayEditAccountFailed();
                             }
                         } else {
-                            displayActionFailed();
+                            displayEditAccountFailed();
                         }
                     }
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
-                        displayActionFailed();
+                        displayEditAccountFailed();
                     }
                 });
     }

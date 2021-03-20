@@ -32,7 +32,7 @@ public class NewEditAccountActivity extends AppCompatActivity {
     static public String usernameCheckFailed = "Check failed, please try again.";
     static public String accountCreationFailed = "Account creation failed, please try again.";
     static public String accountEditFailed = "Account edit failed, please try again.";
-    static public String currentAccountDetails = "This is your current account details.";
+    static public String currentAccountDetails = "These are your current account details.";
     static public String accountCreated = "Account Created";
     static public String accountEdited = "Account Edited";
 

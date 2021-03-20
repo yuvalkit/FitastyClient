@@ -1,6 +1,5 @@
 package com.fitastyclient;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +26,12 @@ public class MainMenuActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener addIngredientButtonClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            startActivity(new Intent(MainMenuActivity.this, AddIngredientActivity.class));
+        }
+    };
+
     private View.OnClickListener settingsButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             startActivity(Utils.getIntentWithUsername(MainMenuActivity.this,
@@ -47,6 +52,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private void setComponents() {
         this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
+        findViewById(R.id.addIngredientButton).setOnClickListener(this.addIngredientButtonClick);
         findViewById(R.id.settingsButton).setOnClickListener(this.settingsButtonClick);
         findViewById(R.id.logOutButton).setOnClickListener(this.logOutButtonClick);
         registerReceiver(broadcastReceiver, new IntentFilter(Utils.FINISH_MAIN_MENU_ACTIVITY));
