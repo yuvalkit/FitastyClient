@@ -133,12 +133,8 @@ public class NewEditAccountActivity extends AppCompatActivity {
         displayMustEnterField(R.id.usernameInformationText);
     }
 
-    private void displayAccountCreationFailed() {
-        setViewColorAndText(R.id.createEditInformationText, accountCreationFailed, R.color.red);
-    }
-
-    private void displayAccountEditFailed() {
-        setViewColorAndText(R.id.createEditInformationText, accountEditFailed, R.color.red);
+    private void displayError(String text) {
+        setViewColorAndText(R.id.createEditInformationText, text, R.color.red);
     }
 
     private void displayCurrentAccountDetails() {
@@ -226,6 +222,13 @@ public class NewEditAccountActivity extends AppCompatActivity {
         return valid;
     }
 
+    private boolean getUsernameExistFromResponse(Response<ResponseBody> response)
+            throws Exception {
+        assert response.body() != null;
+        JSONObject jsonObject = new JSONObject(response.body().string());
+        return jsonObject.getBoolean(Utils.USERNAME_EXIST);
+    }
+
     private void checkUsername() {
         String username = getUsername();
         if (isUsernameEmpty(username)) {
@@ -242,13 +245,10 @@ public class NewEditAccountActivity extends AppCompatActivity {
                                            @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             try {
-                                assert response.body() != null;
-                                JSONObject jsonObject = new JSONObject(response.body().string());
-                                boolean exist = jsonObject.getBoolean(Utils.USERNAME_EXIST);
-                                if (!exist) {
-                                    displayUsernameAvailable();
-                                } else {
+                                if (getUsernameExistFromResponse(response)) {
                                     displayUsernameAlreadyInUse();
+                                } else {
+                                    displayUsernameAvailable();
                                 }
                             } catch (Exception e) {
                                 displayUsernameCheckFailed();
@@ -293,38 +293,46 @@ public class NewEditAccountActivity extends AppCompatActivity {
         finish();
     }
 
+    private void tryToCreateEditAccount(Response<ResponseBody> response, Account account) throws Exception {
+        if (!getUsernameExistFromResponse(response)) {
+            if (!this.isCreateNew) sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
+            String toastText = (this.isCreateNew) ? accountCreated : accountEdited;
+            Utils.displayToast(getApplicationContext(), toastText);
+            startMainMenuActivity(account.getUsername());
+            finish();
+        } else {
+            displayUsernameAlreadyInUse();
+        }
+    }
+
+    private Callback<ResponseBody> getCreateEditCallback(final Account account,
+                                                         final String failedText) {
+        return new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call,
+                                   @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        tryToCreateEditAccount(response, account);
+                    } catch (Exception e) {
+                        displayError(Utils.errorOccurred);
+                    }
+                } else {
+                    displayError(failedText);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call,
+                                  @NonNull Throwable t) {
+                displayError(failedText);
+            }
+        };
+    }
+
     private void createNewAccount() {
         final Account account = getAccountFromFields();
         HttpManager.getRetrofitApi().insertNewAccount(account)
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call,
-                                           @NonNull Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                JSONObject jsonObject = new JSONObject(response.body().string());
-                                boolean exist = jsonObject.getBoolean(Utils.USERNAME_EXIST);
-                                if (!exist) {
-                                    Utils.displayToast(getApplicationContext(), accountCreated);
-                                    startMainMenuActivity(account.getUsername());
-                                    finish();
-                                } else {
-                                    displayUsernameAlreadyInUse();
-                                }
-                            } catch (Exception e) {
-                                displayAccountCreationFailed();
-                            }
-                        } else {
-                            displayAccountCreationFailed();
-                        }
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call,
-                                          @NonNull Throwable t) {
-                        displayAccountCreationFailed();
-                    }
-                });
+                .enqueue(getCreateEditCallback(account, accountCreationFailed));
     }
 
     private void editAccount() {
@@ -335,36 +343,7 @@ public class NewEditAccountActivity extends AppCompatActivity {
             return;
         }
         HttpManager.getRetrofitApi().updateAccount(this.account.getUsername(), account)
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call,
-                                           @NonNull Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                JSONObject jsonObject = new JSONObject(response.body().string());
-                                boolean exist = jsonObject.getBoolean(Utils.USERNAME_EXIST);
-                                if (!exist) {
-                                    sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
-                                    Utils.displayToast(getApplicationContext(), accountEdited);
-                                    startMainMenuActivity(account.getUsername());
-                                    finish();
-                                } else {
-                                    displayUsernameAlreadyInUse();
-                                }
-                            } catch (Exception e) {
-                                displayAccountEditFailed();
-                            }
-                        } else {
-                            displayAccountEditFailed();
-                        }
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call,
-                                          @NonNull Throwable t) {
-                        displayAccountEditFailed();
-                    }
-                });
+                .enqueue(getCreateEditCallback(account, accountEditFailed));
     }
 
     private <V> void setSpinnerByKey(Map<Integer, V> map, V value, Spinner spinner) {
@@ -393,16 +372,6 @@ public class NewEditAccountActivity extends AppCompatActivity {
         setViewText(R.id.createEditButton, text);
     }
 
-    private void displayTitleText() {
-        if (this.isCreateNew) setTitleText(createNewAccount);
-        else setTitleText(editAccount);
-    }
-
-    private void displayButtonText() {
-        if (this.isCreateNew) setButtonText(createText);
-        else setButtonText(editText);
-    }
-
     private void setSpinner(Spinner spinner, int stringsArrayId, int selection_index) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 stringsArrayId, android.R.layout.simple_spinner_item);
@@ -423,8 +392,8 @@ public class NewEditAccountActivity extends AppCompatActivity {
         findViewById(R.id.createEditButton).setOnClickListener(this.createEditButtonClick);
         this.isCreateNew = Objects.requireNonNull(getIntent().getExtras())
                 .getBoolean(Utils.IS_CREATE_NEW);
-        displayTitleText();
-        displayButtonText();
+        setTitleText((this.isCreateNew) ? createNewAccount : editAccount);
+        setButtonText((this.isCreateNew) ? createText : editText);
         if (!this.isCreateNew) {
             this.account = (Account) getIntent().getSerializableExtra(Utils.ACCOUNT);
             populateFieldsFromAccount();

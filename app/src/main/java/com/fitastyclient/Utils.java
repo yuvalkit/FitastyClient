@@ -17,6 +17,8 @@ public class Utils {
     static public String IS_CREATE_NEW = "is_create_new";
     static public String FINISH_MAIN_MENU_ACTIVITY = "finish_main_menu_activity";
 
+    static public String errorOccurred = "An error occurred.";
+
     static public void log(String text) {
         Log.d("DEBUG", text);
     }
