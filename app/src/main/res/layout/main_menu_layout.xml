@@ -16,57 +16,66 @@
             android:id="@+id/newIngredientButton"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="160dp"
             android:layout_marginEnd="170dp"
-            android:layout_marginBottom="280dp"
             android:background="@color/buttonsColor"
             android:text="@string/new_ingredient_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/newDishButton"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginStart="170dp"
-            android:layout_marginBottom="280dp"
+            android:layout_marginTop="160dp"
+            android:layout_marginEnd="45dp"
             android:background="@color/buttonsColor"
             android:text="@string/new_dish_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/myMenusButton"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="170dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="20dp"
             android:background="@color/buttonsColor"
-            android:text="@string/my_menus_text"
+            android:text="@string/my_diet_diaries_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/newIngredientButton"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/settingsButton"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginStart="170dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="45dp"
             android:background="@color/buttonsColor"
             android:text="@string/settings_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/myMenusButton"
+            app:layout_constraintTop_toBottomOf="@+id/newDishButton"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/logOutButton"
@@ -85,14 +94,15 @@
             android:id="@+id/helloText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="540dp"
+            android:layout_marginTop="80dp"
             android:text="@string/hello_text"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

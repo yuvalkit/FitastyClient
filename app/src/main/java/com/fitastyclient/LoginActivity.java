@@ -7,15 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import org.json.JSONException;
+
 import org.json.JSONObject;
-import java.io.IOException;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginScreenActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     static public String mustEnterFields = "You must enter username and password.";
     static public String loginFailed = "Login failed, please try again.";
@@ -33,12 +33,16 @@ public class LoginScreenActivity extends AppCompatActivity {
 
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            startActivity(new Intent(LoginScreenActivity.this, NewAccountActivity.class));
+            Intent intent = new Intent(LoginActivity.this, NewEditAccountActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Utils.IS_CREATE_NEW, true);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     };
 
     private void startMainMenuActivity(String username) {
-        startActivity(MainMenuActivity.getMainMenuIntent(this, username));
+        startActivity(Utils.getIntentWithUsername(this, MainMenuActivity.class, username));
     }
 
     private void tryToLogin(final String username, String password) {
@@ -46,7 +50,6 @@ public class LoginScreenActivity extends AppCompatActivity {
             setLoginInformationText(mustEnterFields);
             return;
         }
-        final String loginFailedText = loginFailed;
         HttpManager.getRetrofitApi().isCorrectUsernameAndPassword(username, password)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -63,17 +66,17 @@ public class LoginScreenActivity extends AppCompatActivity {
                                 } else {
                                     setLoginInformationText(wrongFields);
                                 }
-                            } catch (IOException | JSONException e) {
-                                setLoginInformationText(loginFailedText);
+                            } catch (Exception e) {
+                                setLoginInformationText(loginFailed);
                             }
                         } else {
-                            setLoginInformationText(loginFailedText);
+                            setLoginInformationText(loginFailed);
                         }
                     }
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
-                        setLoginInformationText(loginFailedText);
+                        setLoginInformationText(loginFailed);
                     }
                 });
     }

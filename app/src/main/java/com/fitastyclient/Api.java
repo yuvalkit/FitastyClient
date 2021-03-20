@@ -24,4 +24,15 @@ public interface Api {
     Call<ResponseBody> insertNewAccount(
             @Body Account account
     );
+
+    @GET("/users/get_account_info")
+    Call<ResponseBody> getAccountInformation(
+            @Query("username") String username
+    );
+
+    @POST("/users/update_account")
+    Call<ResponseBody> updateAccount(
+            @Query("prev_username") String username,
+            @Body Account account
+    );
 }

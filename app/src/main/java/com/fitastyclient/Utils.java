@@ -1,14 +1,11 @@
 package com.fitastyclient;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import java.util.Map;
 
 public class Utils {
 
@@ -16,20 +13,21 @@ public class Utils {
     static public String USERNAME = "username";
     static public String FOUND = "found";
     static public String USERNAME_EXIST = "username_exist";
+    static public String ACCOUNT = "account";
+    static public String IS_CREATE_NEW = "is_create_new";
+    static public String FINISH_MAIN_MENU_ACTIVITY = "finish_main_menu_activity";
 
     static public void log(String text) {
         Log.d("DEBUG", text);
     }
 
-    static public String hash(String text) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(text.getBytes(StandardCharsets.UTF_8));
-            byte[] digest = md.digest();
-            return String.format("%064x", new BigInteger(1, digest));
-        } catch (Exception e) {
-            return "";
-        }
+    static public Intent getIntentWithUsername(Context currActivity, Class<?> newClass,
+                                               String username) {
+        Intent intent = new Intent(currActivity, newClass);
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.USERNAME, username);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     static public void displayToast(Context context, String text) {
@@ -38,4 +36,14 @@ public class Utils {
         toast.setGravity(0, 0, 0);
         toast.show();
     }
+
+    public static <K, V> K getKeyByValue(Map<K, V> map, V value) {
+        for (K key : map.keySet()) {
+            if (value.equals(map.get(key))) {
+                return key;
+            }
+        }
+        return null;
+    }
+
 }

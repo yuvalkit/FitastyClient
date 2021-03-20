@@ -2,7 +2,9 @@ package com.fitastyclient;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
 
     @SerializedName("username")
     private String username;
@@ -34,5 +36,65 @@ public class Account {
         this.activityFactor = activityFactor;
         this.dietType = dietType;
         this.weightGoal = weightGoal;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
+    public boolean getIsMale() {
+        return this.isMale;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public int getWeight() {
+        return this.weight;
+    }
+
+    public double getActivityFactor() {
+        return this.activityFactor;
+    }
+
+    public DietType getDietType() {
+        return this.dietType;
+    }
+
+    public double getWeightGoal() {
+        return this.weightGoal;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Account other = (Account) obj;
+        return this.username.equals(other.getUsername())
+                && this.password.equals(other.getPassword())
+                && this.age == other.getAge()
+                && this.isMale == other.getIsMale()
+                && this.height == other.getHeight()
+                && this.weight == other.getWeight()
+                && this.activityFactor == other.getActivityFactor()
+                && this.dietType.equals(other.getDietType())
+                && this.weightGoal == other.getWeightGoal();
     }
 }

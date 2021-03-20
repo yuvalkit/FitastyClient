@@ -10,24 +10,31 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewAccountActivity extends AppCompatActivity {
+public class NewEditAccountActivity extends AppCompatActivity {
 
+    static public String createNewAccount = "Create New Account";
+    static public String editAccount = "Edit Account";
+    static public String createText = "Create";
+    static public String editText = "Edit";
     static public String requiredField = "This field is required.";
     static public String usernameAlreadyTaken = "This username is already taken!";
     static public String usernameIsAvailable = "This username is available!";
+    static public String thisIsYourUsername = "This is your current username.";
     static public String usernameCheckFailed = "Check failed, please try again.";
     static public String accountCreationFailed = "Account creation failed, please try again.";
+    static public String accountEditFailed = "Account edit failed, please try again.";
+    static public String currentAccountDetails = "This is your current account details.";
     static public String accountCreated = "Account Created";
+    static public String accountEdited = "Account Edited";
 
     static public Map<Integer, Double> activityFactorMap = new HashMap<Integer, Double>() {{
         put(0, 1.2);
@@ -55,6 +62,9 @@ public class NewAccountActivity extends AppCompatActivity {
         put(8, 1.0);
     }};
 
+    private boolean isCreateNew;
+    private Account account;
+
     private Spinner activitySpinner;
     private Spinner goalSpinner;
     private Spinner dietTypeSpinner;
@@ -71,30 +81,36 @@ public class NewAccountActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener createButtonClick = new View.OnClickListener() {
+    private View.OnClickListener createEditButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
+            clearInformationText(R.id.createEditInformationText);
             if (checkAllFields()) {
-                createNewAccount();
+                if (isCreateNew) createNewAccount();
+                else editAccount();
             }
         }
     };
 
-    private void setInformationText(int textViewId, String text, int colorName) {
-        TextView view = findViewById(textViewId);
-        if (colorName != 0) view.setTextColor(getResources().getColor(colorName));
+    private void setViewText(int viewId, String text) {
+        ((TextView) findViewById(viewId)).setText(text);
+    }
+
+    private void setViewColorAndText(int viewId, String text, int colorName) {
+        TextView view = findViewById(viewId);
+        view.setTextColor(getResources().getColor(colorName));
         view.setText(text);
     }
 
     private void displayMustEnterField(int textViewId) {
-        setInformationText(textViewId, requiredField, R.color.red);
+        setViewColorAndText(textViewId, requiredField, R.color.red);
     }
 
     private void clearInformationText(int textViewId) {
-        setInformationText(textViewId, Utils.EMPTY, 0);
+        setViewText(textViewId, Utils.EMPTY);
     }
 
     private void setUsernameInformationText(String text, int colorName) {
-        setInformationText(R.id.usernameInformationText, text, colorName);
+        setViewColorAndText(R.id.usernameInformationText, text, colorName);
     }
 
     private void displayUsernameAlreadyInUse() {
@@ -103,6 +119,10 @@ public class NewAccountActivity extends AppCompatActivity {
 
     private void displayUsernameAvailable() {
         setUsernameInformationText(usernameIsAvailable, R.color.green);
+    }
+
+    private void displayThisIsYourUsername() {
+        setUsernameInformationText(thisIsYourUsername, R.color.green);
     }
 
     private void displayUsernameCheckFailed() {
@@ -114,7 +134,15 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void displayAccountCreationFailed() {
-        setInformationText(R.id.createInformationText, accountCreationFailed, R.color.red);
+        setViewColorAndText(R.id.createEditInformationText, accountCreationFailed, R.color.red);
+    }
+
+    private void displayAccountEditFailed() {
+        setViewColorAndText(R.id.createEditInformationText, accountEditFailed, R.color.red);
+    }
+
+    private void displayCurrentAccountDetails() {
+        setViewColorAndText(R.id.createEditInformationText, currentAccountDetails, R.color.red);
     }
 
     private String getTextFromView(int viewId) {
@@ -123,11 +151,11 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private String getUsername() {
-        return getTextFromView(R.id.newAccountUsernameInput);
+        return getTextFromView(R.id.newEditAccountUsernameInput);
     }
 
     private String getPassword() {
-        return getTextFromView(R.id.newAccountPasswordInput);
+        return getTextFromView(R.id.newEditAccountPasswordInput);
     }
 
     private String getAge() {
@@ -150,53 +178,63 @@ public class NewAccountActivity extends AppCompatActivity {
         return false;
     }
 
+    private void toggleRadioButton(int radioButtonId) {
+        ((RadioButton) findViewById(radioButtonId)).toggle();
+    }
+
     private boolean isRadioButtonChecked(int radioButtonId) {
         return ((RadioButton) findViewById(radioButtonId)).isChecked();
+    }
+
+    private boolean isRadioButtonsEmpty() {
+        int genderInfoId = R.id.genderInformationText;
+        if (!isRadioButtonChecked(R.id.maleRadioButton) &&
+                !isRadioButtonChecked(R.id.femaleRadioButton)) {
+            displayMustEnterField(genderInfoId);
+            return true;
+        }
+        clearInformationText(genderInfoId);
+        return false;
     }
 
     boolean isFieldEmpty(String text, int InfoId) {
         if (text.isEmpty()) {
             displayMustEnterField(InfoId);
             return true;
-        } else {
-            clearInformationText(InfoId);
-            return false;
         }
+        clearInformationText(InfoId);
+        return false;
     }
 
     private boolean checkAllFields() {
         boolean valid = true;
-
         int passwordInfoId = R.id.passwordInformationText;
-        int genderInfoId = R.id.genderInformationText;
         int ageInfoId = R.id.ageInformationText;
         int heightInfoId = R.id.heightInformationText;
         int weightInfoId = R.id.weightInformationText;
-
         String username = getUsername();
         String password = getPassword();
         String age = getAge();
         String height = getHeight();
         String weight = getWeight();
-
         if (isUsernameEmpty(username)) valid = false;
         if (isFieldEmpty(password, passwordInfoId)) valid = false;
-        if (!isRadioButtonChecked(R.id.maleRadioButton) &&
-                !isRadioButtonChecked(R.id.femaleRadioButton)) {
-            displayMustEnterField(genderInfoId);
-        } else {
-            clearInformationText(genderInfoId);
-        }
+        if (isRadioButtonsEmpty()) valid = false;
         if (isFieldEmpty(age, ageInfoId)) valid = false;
         if (isFieldEmpty(height, heightInfoId)) valid = false;
         if (isFieldEmpty(weight, weightInfoId)) valid = false;
-
         return valid;
     }
 
     private void checkUsername() {
         String username = getUsername();
-        if (isUsernameEmpty(username)) return;
+        if (isUsernameEmpty(username)) {
+            return;
+        }
+        if (!this.isCreateNew && username.equals(this.account.getUsername())) {
+            displayThisIsYourUsername();
+            return;
+        }
         HttpManager.getRetrofitApi().isUsernameAvailable(username)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -212,7 +250,7 @@ public class NewAccountActivity extends AppCompatActivity {
                                 } else {
                                     displayUsernameAlreadyInUse();
                                 }
-                            } catch (IOException | JSONException e) {
+                            } catch (Exception e) {
                                 displayUsernameCheckFailed();
                             }
                         } else {
@@ -227,7 +265,7 @@ public class NewAccountActivity extends AppCompatActivity {
                 });
     }
 
-    private Account getAccount() {
+    private Account getAccountFromFields() {
         String username = getUsername();
         String password = getPassword();
         int age = Integer.parseInt(getAge());
@@ -249,15 +287,14 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void startMainMenuActivity(String username) {
-        Intent intent = MainMenuActivity.getMainMenuIntent(this, username);
+        Intent intent = Utils.getIntentWithUsername(this, MainMenuActivity.class, username);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
 
     private void createNewAccount() {
-        final String username = getUsername();
-        Account account = getAccount();
+        final Account account = getAccountFromFields();
         HttpManager.getRetrofitApi().insertNewAccount(account)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -270,11 +307,12 @@ public class NewAccountActivity extends AppCompatActivity {
                                 boolean exist = jsonObject.getBoolean(Utils.USERNAME_EXIST);
                                 if (!exist) {
                                     Utils.displayToast(getApplicationContext(), accountCreated);
-                                    startMainMenuActivity(username);
+                                    startMainMenuActivity(account.getUsername());
+                                    finish();
                                 } else {
                                     displayUsernameAlreadyInUse();
                                 }
-                            } catch (IOException | JSONException e) {
+                            } catch (Exception e) {
                                 displayAccountCreationFailed();
                             }
                         } else {
@@ -289,6 +327,82 @@ public class NewAccountActivity extends AppCompatActivity {
                 });
     }
 
+    private void editAccount() {
+        final Account account = getAccountFromFields();
+        if (account.equals(this.account)) {
+            displayCurrentAccountDetails();
+            clearInformationText(R.id.usernameInformationText);
+            return;
+        }
+        HttpManager.getRetrofitApi().updateAccount(this.account.getUsername(), account)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                assert response.body() != null;
+                                JSONObject jsonObject = new JSONObject(response.body().string());
+                                boolean exist = jsonObject.getBoolean(Utils.USERNAME_EXIST);
+                                if (!exist) {
+                                    sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
+                                    Utils.displayToast(getApplicationContext(), accountEdited);
+                                    startMainMenuActivity(account.getUsername());
+                                    finish();
+                                } else {
+                                    displayUsernameAlreadyInUse();
+                                }
+                            } catch (Exception e) {
+                                displayAccountEditFailed();
+                            }
+                        } else {
+                            displayAccountEditFailed();
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call,
+                                          @NonNull Throwable t) {
+                        displayAccountEditFailed();
+                    }
+                });
+    }
+
+    private <V> void setSpinnerByKey(Map<Integer, V> map, V value, Spinner spinner) {
+        Integer key = Utils.getKeyByValue(map, value);
+        if (key != null) spinner.setSelection(key);
+    }
+
+    private void populateFieldsFromAccount() {
+        setViewText(R.id.newEditAccountUsernameInput, this.account.getUsername());
+        setViewText(R.id.newEditAccountPasswordInput, this.account.getPassword());
+        if (this.account.getIsMale()) toggleRadioButton(R.id.maleRadioButton);
+        else toggleRadioButton(R.id.femaleRadioButton);
+        setViewText(R.id.ageInput, Integer.toString(this.account.getAge()));
+        setViewText(R.id.heightInput, Integer.toString(this.account.getHeight()));
+        setViewText(R.id.weightInput, Integer.toString(this.account.getWeight()));
+        setSpinnerByKey(activityFactorMap, this.account.getActivityFactor(), this.activitySpinner);
+        setSpinnerByKey(weightGoalMap, this.account.getWeightGoal(), this.goalSpinner);
+        setSpinnerByKey(dietTypeMap, this.account.getDietType(), this.dietTypeSpinner);
+    }
+
+    private void setTitleText(String text) {
+        setViewText(R.id.newEditAccountTitleText, text);
+    }
+
+    private void setButtonText(String text) {
+        setViewText(R.id.createEditButton, text);
+    }
+
+    private void displayTitleText() {
+        if (this.isCreateNew) setTitleText(createNewAccount);
+        else setTitleText(editAccount);
+    }
+
+    private void displayButtonText() {
+        if (this.isCreateNew) setButtonText(createText);
+        else setButtonText(editText);
+    }
+
     private void setSpinner(Spinner spinner, int stringsArrayId, int selection_index) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 stringsArrayId, android.R.layout.simple_spinner_item);
@@ -298,23 +412,29 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void setComponents() {
-        this.activitySpinner = (Spinner) findViewById(R.id.activity_spinner);
-        this.goalSpinner = (Spinner) findViewById(R.id.goal_spinner);
-        this.dietTypeSpinner = (Spinner) findViewById(R.id.diet_type_spinner);
-
+        this.activitySpinner = findViewById(R.id.activity_spinner);
+        this.goalSpinner = findViewById(R.id.goal_spinner);
+        this.dietTypeSpinner = findViewById(R.id.diet_type_spinner);
         setSpinner(this.activitySpinner, R.array.activity_spinner_array, 2);
         setSpinner(this.goalSpinner, R.array.goal_spinner_array, 4);
         setSpinner(this.dietTypeSpinner, R.array.diet_type_spinner_array, 1);
-
-        findViewById(R.id.cancelButton).setOnClickListener(this.cancelButtonClick);
+        findViewById(R.id.newEditAccountCancelButton).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.checkUsernameButton).setOnClickListener(this.checkUsernameButtonClick);
-        findViewById(R.id.createButton).setOnClickListener(this.createButtonClick);
+        findViewById(R.id.createEditButton).setOnClickListener(this.createEditButtonClick);
+        this.isCreateNew = Objects.requireNonNull(getIntent().getExtras())
+                .getBoolean(Utils.IS_CREATE_NEW);
+        displayTitleText();
+        displayButtonText();
+        if (!this.isCreateNew) {
+            this.account = (Account) getIntent().getSerializableExtra(Utils.ACCOUNT);
+            populateFieldsFromAccount();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_account_layout);
+        setContentView(R.layout.new_edit_account_layout);
         setComponents();
     }
 }

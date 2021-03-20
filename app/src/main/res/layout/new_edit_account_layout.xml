@@ -12,11 +12,11 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/createInformationText"
+            android:id="@+id/createEditInformationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/createButton"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/createEditButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -121,6 +121,7 @@
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
+            android:maxLength="3"
             android:inputType="number"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -166,6 +167,7 @@
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
+            android:maxLength="3"
             android:inputType="number"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -224,6 +226,7 @@
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
+            android:maxLength="3"
             android:inputType="number"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -274,17 +277,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newAccountPasswordInput"
+            app:layout_constraintTop_toBottomOf="@+id/newEditAccountPasswordInput"
             app:layout_constraintVertical_bias="0.0" />
 
         <EditText
-            android:id="@+id/newAccountPasswordInput"
+            android:id="@+id/newEditAccountPasswordInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
             android:background="@color/white"
             android:ems="10"
+            android:maxLength="50"
             android:inputType="textPassword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -294,14 +298,13 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/createButton"
+            android:id="@+id/createEditButton"
             android:layout_width="80dp"
             android:layout_height="39dp"
             android:layout_marginTop="950dp"
             android:layout_marginBottom="100dp"
             android:background="@color/buttonsColor"
-            android:text="@string/create"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -325,13 +328,12 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/newAccountText"
+            android:id="@+id/newEditAccountTitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="@string/create_new_account_text"
             android:textColor="@color/newAccountButtonColor"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -355,7 +357,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/cancelButton"
+            android:id="@+id/newEditAccountCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -378,18 +380,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/newAccountUsernameInput"
+            app:layout_constraintStart_toEndOf="@+id/newEditAccountUsernameInput"
             app:layout_constraintTop_toBottomOf="@+id/usernameText"
             app:layout_constraintVertical_bias="0.0" />
 
         <EditText
-            android:id="@+id/newAccountUsernameInput"
+            android:id="@+id/newEditAccountUsernameInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
             android:background="@color/white"
             android:ems="10"
+            android:maxLength="50"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -408,7 +411,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newAccountUsernameInput"
+            app:layout_constraintTop_toBottomOf="@+id/newEditAccountUsernameInput"
             app:layout_constraintVertical_bias="0.0" />
 
 
@@ -431,6 +434,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/dark_blue"
+                android:checked="false"
                 android:text="@string/male" />
 
             <RadioButton
