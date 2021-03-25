@@ -7,12 +7,8 @@ public class AmountShortIngredient extends AbstractShortIngredient {
     @SerializedName("amount")
     private int amount;
 
-    public AmountShortIngredient(String ingredientName, boolean isLiquid, int amount) {
-        super(ingredientName, isLiquid);
+    public AmountShortIngredient(String ingredientName, int amount) {
+        super(ingredientName);
         this.amount = amount;
-    }
-
-    public int getAmount() {
-        return this.amount;
     }
 }

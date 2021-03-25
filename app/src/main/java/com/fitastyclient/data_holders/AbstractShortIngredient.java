@@ -1,25 +1,19 @@
 package com.fitastyclient.data_holders;
 
 import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
-public abstract class AbstractShortIngredient {
+public abstract class AbstractShortIngredient implements Serializable {
 
     @SerializedName("ingredient_name")
     protected String ingredientName;
 
-    @SerializedName("is_liquid")
-    private boolean isLiquid;
 
-    public AbstractShortIngredient(String ingredientName, boolean isLiquid) {
+    public AbstractShortIngredient(String ingredientName) {
         this.ingredientName = ingredientName;
-        this.isLiquid = isLiquid;
     }
 
     public String getIngredientName() {
         return this.ingredientName;
-    }
-
-    public boolean getIsLiquid() {
-        return this.isLiquid;
     }
 }

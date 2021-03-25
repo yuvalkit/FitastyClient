@@ -11,8 +11,7 @@ import android.widget.TextView;
 
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-import com.fitastyclient.activities.MyAppCompatActivity;
-import com.fitastyclient.data_holders.AmountShortIngredient;
+import com.fitastyclient.data_holders.ShortIngredient;
 
 import java.util.Random;
 
@@ -44,18 +43,18 @@ public class AddDishActivity extends MyAppCompatActivity {
 
     private View.OnClickListener ingredientsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            AmountShortIngredient ingredient = tryToAddIngredientToTable();
+            ShortIngredient ingredient = tryToAddIngredientToTable();
             addIngredientToIngredientsTable(ingredient);
         }
     };
 
-    private AmountShortIngredient tryToAddIngredientToTable() {
+    private ShortIngredient tryToAddIngredientToTable() {
         Random rand = new Random();
         int number = rand.nextInt(1000);
         int amount = rand.nextInt(1000);
         boolean isLiquid = rand.nextBoolean();
         String name = (isLiquid) ? "Milk" : "Apple";
-        return new AmountShortIngredient(name + " #" + number, isLiquid, amount);
+        return new ShortIngredient(name + " #" + number, isLiquid, amount);
     }
 
     private void addDeleteButtonToRow(TableRow row) {
@@ -88,7 +87,7 @@ public class AddDishActivity extends MyAppCompatActivity {
         titlesRow.addView(view);
     }
 
-    private void addIngredientToIngredientsTable(AmountShortIngredient ingredient) {
+    private void addIngredientToIngredientsTable(ShortIngredient ingredient) {
         String units = (ingredient.getIsLiquid()) ? Utils.ML : Utils.GRAM;
         String amountString = ingredient.getAmount() + units;
         TableRow row = new TableRow(this);
