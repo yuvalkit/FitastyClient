@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">FitastyClient</string>
+
     <!--  login_layout strings  -->
     <string name="username_text">Username:</string>
     <string name="password_text">Password:</string>
     <string name="login_text">LOGIN</string>
     <string name="create_new_account_text">Create New Account</string>
+
     <!--  main_menu_layout strings  -->
     <string name="new_ingredient_text">Add New Ingredient</string>
     <string name="new_dish_text">Add New Dish</string>
@@ -12,6 +14,7 @@
     <string name="settings_text">Settings</string>
     <string name="log_out_text">LOG OUT</string>
     <string name="hello_text">Hello !</string>
+
     <!--  new_edit_account_layout strings  -->
     <string name="cancel">Cancel</string>
     <string name="check">Check</string>
@@ -26,9 +29,27 @@
     <string name="activity_text">How active are you?</string>
     <string name="goal_text">What is your weight goal?</string>
     <string name="diet_type_text">What is your preferred diet type?</string>
+
     <!--  add_ingredient_layout strings  -->
+    <string name="add">Add</string>
+    <string name="ingredient_name">Ingredient Name:</string>
+    <string name="state_of_matter">State of matter:</string>
+    <string name="solid">Solid</string>
+    <string name="liquid">Liquid</string>
+    <string name="serving_size">Serving size:</string>
+    <string name="fat">Fat:</string>
+    <string name="carb">Carb:</string>
+    <string name="fiber">Fiber:</string>
+    <string name="protein">Protein:</string>
+    <string name="gram">g</string>
+    <string name="attributes">Attributes:</string>
+    <string name="vegan">Vegan</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="gluten_free">Gluten-Free</string>
+    <string name="lactose_free">Lactose-Free</string>
 
     <!--  settings_layout strings  -->
     <string name="edit_account">Edit Account</string>
+    <string name="delete_account">Delete Account</string>
 
 </resources>

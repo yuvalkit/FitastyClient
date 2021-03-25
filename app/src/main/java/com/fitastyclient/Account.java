@@ -1,5 +1,7 @@
 package com.fitastyclient;
 
+import android.widget.TextView;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -25,7 +27,7 @@ public class Account implements Serializable {
     @SerializedName("weight_goal")
     private double weightGoal;
 
-    Account(String username, String password, int age, boolean isMale, int height, int weight,
+    public Account(String username, String password, int age, boolean isMale, int height, int weight,
             double activityFactor, DietType dietType, double weightGoal) {
         this.username = username;
         this.password = password;

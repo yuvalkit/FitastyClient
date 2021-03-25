@@ -35,4 +35,9 @@ public interface Api {
             @Query("prev_username") String username,
             @Body Account account
     );
+
+    @POST("/food/insert_ingredient")
+    Call<ResponseBody> insertNewIngredient(
+            @Body Ingredient ingredient
+    );
 }

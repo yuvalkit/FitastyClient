@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".MainMenuActivity"/>
         <activity android:name=".NewEditAccountActivity"/>
+        <activity android:name=".AddDishActivity"/>
         <activity android:name=".AddIngredientActivity"/>
         <activity android:name=".SettingsActivity"/>
     </application>

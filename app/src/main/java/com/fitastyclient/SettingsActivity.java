@@ -1,11 +1,14 @@
 package com.fitastyclient;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
@@ -17,23 +20,42 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends MyAppCompatActivity {
 
     static public String actionFailed = "Action failed, please try again.";
+    static public String deleteTitle = "Delete Account";
+    static public String areYouSureText = "Are you sure you want to delete this account?";
+    static public String accountDeleted = "Account Deleted";
 
     private String username;
 
-    private View.OnClickListener cancelButtonClick = new View.OnClickListener() {
-        public void onClick(View v) {
-            finish();
-        }
-    };
-
-    private View.OnClickListener editAccountButton = new View.OnClickListener() {
+    private View.OnClickListener editAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             tryToEditAccount();
         }
     };
+
+    private View.OnClickListener deleteAccountButtonClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            displayDeletePopup();
+        }
+    };
+
+    private void displayDeletePopup() {
+        new AlertDialog.Builder(this, R.style.MyDialogTheme)
+                .setTitle(deleteTitle)
+                .setMessage(areYouSureText)
+                .setPositiveButton(Utils.YES, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
+                        Utils.displayToast(SettingsActivity.this, accountDeleted);
+                        finish();
+                    }
+                })
+                .setNegativeButton(Utils.NO, null)
+                .setIcon(android.R.drawable.stat_notify_error)
+                .show();
+    }
 
     private void clearEditAccountInformation() {
         TextView view = findViewById(R.id.editAccountInformationText);
@@ -87,7 +109,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void setComponents() {
         this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
         findViewById(R.id.settingsCancelButton).setOnClickListener(this.cancelButtonClick);
-        findViewById(R.id.editAccountButton).setOnClickListener(this.editAccountButton);
+        findViewById(R.id.editAccountButton).setOnClickListener(this.editAccountButtonClick);
+        findViewById(R.id.deleteAccountButton).setOnClickListener(this.deleteAccountButtonClick);
     }
 
     @Override

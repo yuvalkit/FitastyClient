@@ -13,7 +13,7 @@ public class DietType implements Serializable {
     @SerializedName("protein")
     private double protein;
 
-    DietType(double carb, double fat, double protein) {
+    public DietType(double carb, double fat, double protein) {
         this.carb = carb;
         this.fat = fat;
         this.protein = protein;

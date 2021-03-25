@@ -3,13 +3,8 @@ package com.fitastyclient;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +14,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewEditAccountActivity extends AppCompatActivity {
+public class NewEditAccountActivity extends MyAppCompatActivity {
 
     static public String createNewAccount = "Create New Account";
     static public String editAccount = "Edit Account";
     static public String createText = "Create";
     static public String editText = "Edit";
-    static public String requiredField = "This field is required.";
     static public String usernameAlreadyTaken = "This username is already taken!";
     static public String usernameIsAvailable = "This username is available!";
     static public String thisIsYourUsername = "This is your current username.";
@@ -64,16 +58,9 @@ public class NewEditAccountActivity extends AppCompatActivity {
 
     private boolean isCreateNew;
     private Account account;
-
     private Spinner activitySpinner;
     private Spinner goalSpinner;
     private Spinner dietTypeSpinner;
-
-    private View.OnClickListener cancelButtonClick = new View.OnClickListener() {
-        public void onClick(View v) {
-            finish();
-        }
-    };
 
     private View.OnClickListener checkUsernameButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -91,29 +78,11 @@ public class NewEditAccountActivity extends AppCompatActivity {
         }
     };
 
-    private void setViewText(int viewId, String text) {
-        ((TextView) findViewById(viewId)).setText(text);
-    }
-
-    private void setViewColorAndText(int viewId, String text, int colorName) {
-        TextView view = findViewById(viewId);
-        view.setTextColor(getResources().getColor(colorName));
-        view.setText(text);
-    }
-
-    private void displayMustEnterField(int textViewId) {
-        setViewColorAndText(textViewId, requiredField, R.color.red);
-    }
-
-    private void clearInformationText(int textViewId) {
-        setViewText(textViewId, Utils.EMPTY);
-    }
-
     private void setUsernameInformationText(String text, int colorName) {
-        setViewColorAndText(R.id.usernameInformationText, text, colorName);
+        setViewTextAndColor(R.id.usernameInformationText, text, colorName);
     }
 
-    private void displayUsernameAlreadyInUse() {
+    private void displayUsernameAlreadyTaken() {
         setUsernameInformationText(usernameAlreadyTaken, R.color.red);
     }
 
@@ -130,20 +99,15 @@ public class NewEditAccountActivity extends AppCompatActivity {
     }
 
     private void displayMustInsertUsername() {
-        displayMustEnterField(R.id.usernameInformationText);
+        displayFieldIsRequired(R.id.usernameInformationText);
     }
 
     private void displayError(String text) {
-        setViewColorAndText(R.id.createEditInformationText, text, R.color.red);
+        setViewTextAndColor(R.id.createEditInformationText, text, R.color.red);
     }
 
     private void displayCurrentAccountDetails() {
-        setViewColorAndText(R.id.createEditInformationText, currentAccountDetails, R.color.red);
-    }
-
-    private String getTextFromView(int viewId) {
-        EditText editText = findViewById(viewId);
-        return editText.getText().toString();
+        setViewTextAndColor(R.id.createEditInformationText, currentAccountDetails, R.color.red);
     }
 
     private String getUsername() {
@@ -174,51 +138,34 @@ public class NewEditAccountActivity extends AppCompatActivity {
         return false;
     }
 
-    private void toggleRadioButton(int radioButtonId) {
-        ((RadioButton) findViewById(radioButtonId)).toggle();
-    }
-
-    private boolean isRadioButtonChecked(int radioButtonId) {
-        return ((RadioButton) findViewById(radioButtonId)).isChecked();
-    }
-
     private boolean isRadioButtonsEmpty() {
         int genderInfoId = R.id.genderInformationText;
         if (!isRadioButtonChecked(R.id.maleRadioButton) &&
                 !isRadioButtonChecked(R.id.femaleRadioButton)) {
-            displayMustEnterField(genderInfoId);
+            displayFieldIsRequired(genderInfoId);
             return true;
         }
         clearInformationText(genderInfoId);
         return false;
     }
 
-    boolean isFieldEmpty(String text, int InfoId) {
-        if (text.isEmpty()) {
-            displayMustEnterField(InfoId);
-            return true;
-        }
-        clearInformationText(InfoId);
-        return false;
-    }
-
     private boolean checkAllFields() {
         boolean valid = true;
+        int passwordViewId = R.id.newEditAccountPasswordInput;
+        int ageViewId = R.id.newEditAccountPasswordInput;
+        int heightViewId = R.id.newEditAccountPasswordInput;
+        int weightViewId = R.id.newEditAccountPasswordInput;
         int passwordInfoId = R.id.passwordInformationText;
         int ageInfoId = R.id.ageInformationText;
         int heightInfoId = R.id.heightInformationText;
         int weightInfoId = R.id.weightInformationText;
         String username = getUsername();
-        String password = getPassword();
-        String age = getAge();
-        String height = getHeight();
-        String weight = getWeight();
         if (isUsernameEmpty(username)) valid = false;
-        if (isFieldEmpty(password, passwordInfoId)) valid = false;
+        if (isFieldEmptyQuery(passwordViewId, passwordInfoId)) valid = false;
         if (isRadioButtonsEmpty()) valid = false;
-        if (isFieldEmpty(age, ageInfoId)) valid = false;
-        if (isFieldEmpty(height, heightInfoId)) valid = false;
-        if (isFieldEmpty(weight, weightInfoId)) valid = false;
+        if (isFieldEmptyQuery(ageViewId, ageInfoId)) valid = false;
+        if (isFieldEmptyQuery(heightViewId, heightInfoId)) valid = false;
+        if (isFieldEmptyQuery(weightViewId, weightInfoId)) valid = false;
         return valid;
     }
 
@@ -246,7 +193,7 @@ public class NewEditAccountActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             try {
                                 if (getUsernameExistFromResponse(response)) {
-                                    displayUsernameAlreadyInUse();
+                                    displayUsernameAlreadyTaken();
                                 } else {
                                     displayUsernameAvailable();
                                 }
@@ -293,7 +240,8 @@ public class NewEditAccountActivity extends AppCompatActivity {
         finish();
     }
 
-    private void tryToCreateEditAccount(Response<ResponseBody> response, Account account) throws Exception {
+    private void tryToCreateEditAccount(Response<ResponseBody> response, Account account)
+            throws Exception {
         if (!getUsernameExistFromResponse(response)) {
             if (!this.isCreateNew) sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
             String toastText = (this.isCreateNew) ? accountCreated : accountEdited;
@@ -301,7 +249,7 @@ public class NewEditAccountActivity extends AppCompatActivity {
             startMainMenuActivity(account.getUsername());
             finish();
         } else {
-            displayUsernameAlreadyInUse();
+            displayUsernameAlreadyTaken();
         }
     }
 
@@ -315,7 +263,7 @@ public class NewEditAccountActivity extends AppCompatActivity {
                     try {
                         tryToCreateEditAccount(response, account);
                     } catch (Exception e) {
-                        displayError(Utils.errorOccurred);
+                        displayError(errorOccurred);
                     }
                 } else {
                     displayError(failedText);
@@ -370,14 +318,6 @@ public class NewEditAccountActivity extends AppCompatActivity {
 
     private void setButtonText(String text) {
         setViewText(R.id.createEditButton, text);
-    }
-
-    private void setSpinner(Spinner spinner, int stringsArrayId, int selection_index) {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                stringsArrayId, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(selection_index);
     }
 
     private void setComponents() {

@@ -7,15 +7,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
-public class MainMenuActivity extends AppCompatActivity {
+public class MainMenuActivity extends MyAppCompatActivity {
 
     private String username;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context arg, Intent intent) {
             String action = intent.getAction();
@@ -23,6 +21,12 @@ public class MainMenuActivity extends AppCompatActivity {
             if (action.equals(Utils.FINISH_MAIN_MENU_ACTIVITY)) {
                 finish();
             }
+        }
+    };
+
+    private View.OnClickListener addDishButtonClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            startActivity(new Intent(MainMenuActivity.this, AddDishActivity.class));
         }
     };
 
@@ -52,6 +56,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private void setComponents() {
         this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
+        findViewById(R.id.addDishButton).setOnClickListener(this.addDishButtonClick);
         findViewById(R.id.addIngredientButton).setOnClickListener(this.addIngredientButtonClick);
         findViewById(R.id.settingsButton).setOnClickListener(this.settingsButtonClick);
         findViewById(R.id.logOutButton).setOnClickListener(this.logOutButtonClick);

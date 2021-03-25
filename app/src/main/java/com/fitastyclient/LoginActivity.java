@@ -15,7 +15,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends MyAppCompatActivity {
 
     static public String mustEnterFields = "You must enter username and password.";
     static public String loginFailed = "Login failed, please try again.";
