@@ -1,4 +1,4 @@
-package com.fitastyclient;
+package com.fitastyclient.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +7,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.fitastyclient.R;
+import com.fitastyclient.Utils;
+
 import java.util.Objects;
 
 public class MainMenuActivity extends MyAppCompatActivity {

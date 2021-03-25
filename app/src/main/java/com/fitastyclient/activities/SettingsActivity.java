@@ -1,6 +1,5 @@
-package com.fitastyclient;
+package com.fitastyclient.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +8,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.fitastyclient.data_holders.Account;
+import com.fitastyclient.http.HttpManager;
+import com.fitastyclient.R;
+import com.fitastyclient.Utils;
 import com.google.gson.Gson;
 
 import java.util.Objects;

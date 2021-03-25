@@ -1,4 +1,7 @@
-package com.fitastyclient;
+package com.fitastyclient.http;
+
+import com.fitastyclient.data_holders.Account;
+import com.fitastyclient.data_holders.Ingredient;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

@@ -1,4 +1,4 @@
-package com.fitastyclient;
+package com.fitastyclient.http;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

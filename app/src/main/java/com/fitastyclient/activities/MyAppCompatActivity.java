@@ -1,4 +1,4 @@
-package com.fitastyclient;
+package com.fitastyclient.activities;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -8,6 +8,9 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.fitastyclient.R;
+import com.fitastyclient.Utils;
 
 public abstract class MyAppCompatActivity extends AppCompatActivity {
 
@@ -73,5 +76,9 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setSelection(selection_index);
+    }
+
+    protected int getColorById(int colorId) {
+        return getResources().getColor(colorId);
     }
 }

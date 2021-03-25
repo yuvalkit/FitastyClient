@@ -1,6 +1,4 @@
-package com.fitastyclient;
-
-import android.widget.TextView;
+package com.fitastyclient.data_holders;
 
 import com.google.gson.annotations.SerializedName;
 

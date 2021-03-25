@@ -30,9 +30,15 @@
     <string name="goal_text">What is your weight goal?</string>
     <string name="diet_type_text">What is your preferred diet type?</string>
 
+    <!--  add_dish_layout strings  -->
+    <string name="dish_name">Dish name:</string>
+    <string name="ingredients_contained">The dish contains these ingredients:</string>
+    <string name="name">Name</string>
+    <string name="amount">Amount</string>
+
     <!--  add_ingredient_layout strings  -->
     <string name="add">Add</string>
-    <string name="ingredient_name">Ingredient Name:</string>
+    <string name="ingredient_name">Ingredient name:</string>
     <string name="state_of_matter">State of matter:</string>
     <string name="solid">Solid</string>
     <string name="liquid">Liquid</string>

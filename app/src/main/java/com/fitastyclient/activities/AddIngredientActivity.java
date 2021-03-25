@@ -1,9 +1,14 @@
-package com.fitastyclient;
+package com.fitastyclient.activities;
 
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+
+import com.fitastyclient.http.HttpManager;
+import com.fitastyclient.data_holders.Ingredient;
+import com.fitastyclient.R;
+import com.fitastyclient.Utils;
 
 import org.json.JSONObject;
 
@@ -23,7 +28,7 @@ public class AddIngredientActivity extends MyAppCompatActivity {
 
     private View.OnClickListener addButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            clearInformationText(R.id.addButtonInformationText);
+            clearInformationText(R.id.addIngredientButtonInfoText);
             if (checkAllFields()) {
                 addIngredient();
             }
@@ -56,7 +61,7 @@ public class AddIngredientActivity extends MyAppCompatActivity {
     }
 
     private void displayError(String text) {
-        setViewTextAndColor(R.id.addButtonInformationText, text, R.color.red);
+        setViewTextAndColor(R.id.addIngredientButtonInfoText, text, R.color.red);
     }
 
 

@@ -1,4 +1,4 @@
-package com.fitastyclient;
+package com.fitastyclient.data_holders;
 
 import com.google.gson.annotations.SerializedName;
 
