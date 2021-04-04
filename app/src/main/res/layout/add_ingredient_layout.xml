@@ -21,6 +21,22 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <CheckBox
+            android:id="@+id/veganCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="198dp"
+            android:text="@string/vegan"
+            android:buttonTint="@color/darkBlue"
+            app:layout_constraintBottom_toTopOf="@+id/addNewIngredientButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/attributesText"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
             android:id="@+id/lactoseFreeCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -505,22 +521,6 @@
                 android:text="@string/liquid" />
 
         </RadioGroup>
-
-        <CheckBox
-            android:id="@+id/veganCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="198dp"
-            android:text="@string/vegan"
-            android:buttonTint="@color/darkBlue"
-            app:layout_constraintBottom_toTopOf="@+id/addNewIngredientButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attributesText"
-            app:layout_constraintVertical_bias="0.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

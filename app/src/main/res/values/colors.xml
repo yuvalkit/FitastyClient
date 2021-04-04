@@ -13,10 +13,14 @@
     <color name="green">#29A613</color>
     <color name="gray">#717171</color>
     <color name="lightGray">#C5C5C5</color>
+    <color name="veryLightGray">#ECECEC</color>
 
     <!--  blue colors  -->
+    <color name="extraLightBlue">#ECF6FF</color>
     <color name="veryLightBlue">#AAD3FF</color>
+    <color name="mildBlue">#7BB9FD</color>
     <color name="lightBlue">#439BFB</color>
+    <color name="blue">#1567BD</color>
     <color name="darkBlue">#105097</color>
     <color name="veryDarkBlue">#09386C</color>
 </resources>

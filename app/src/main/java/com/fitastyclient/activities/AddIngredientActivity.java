@@ -2,17 +2,12 @@ package com.fitastyclient.activities;
 
 import android.os.Bundle;
 import android.view.View;
-
 import androidx.annotation.NonNull;
-
+import com.fitastyclient.data_holders.NameExistObject;
 import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-
-import org.json.JSONObject;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,19 +44,19 @@ public class AddIngredientActivity extends MyAppCompatActivity {
 
     private void setUnitsTexts(String units) {
         setViewText(R.id.servingSizeUnits, units);
-        setViewText(R.id.factsPer100Text, factsPer100prefix + units + Utils.COLON);
+        setViewText(R.id.factsPer100Text, Utils.factsPer100prefix + units + Utils.COLON);
     }
 
     private void displayNameAlreadyUsed() {
-        setViewTextAndColor(R.id.ingredientNameInformationText, nameAlreadyUsed, R.color.red);
+        displayError(R.id.ingredientNameInformationText, nameAlreadyUsed);
     }
 
     private void displayFactsInfoError(String text) {
-        setViewTextAndColor(R.id.factsInformationText, text, R.color.red);
+        displayError(R.id.factsInformationText, text);
     }
 
     private void displayError(String text) {
-        setViewTextAndColor(R.id.addIngredientButtonInfoText, text, R.color.red);
+        displayError(R.id.addIngredientButtonInfoText, text);
     }
 
 
@@ -114,37 +109,31 @@ public class AddIngredientActivity extends MyAppCompatActivity {
         boolean isGlutenFree = isCheckBoxChecked(R.id.glutenFreeCheckBox);
         boolean isLactoseFree = isCheckBoxChecked(R.id.lactoseFreeCheckBox);
         double serving = Double.parseDouble(getTextFromView(R.id.servingSizeInput));
-        return new Ingredient(name, isLiquid, fat, carb, fiber, protein, isVegan, isVegetarian,
-                isGlutenFree, isLactoseFree, serving);
+        return new Ingredient(name, isLiquid, fat, carb, fiber, protein, isVegan,
+                isVegetarian, isGlutenFree, isLactoseFree, serving);
     }
 
     private void addIngredient() {
         Ingredient ingredient = getIngredientFromFields();
         HttpManager.getRetrofitApi().insertNewIngredient(ingredient)
-                .enqueue(new Callback<ResponseBody>() {
+                .enqueue(new Callback<NameExistObject>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call,
-                                           @NonNull Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<NameExistObject> call,
+                                           @NonNull Response<NameExistObject> response) {
                         if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                JSONObject jsonObject = new JSONObject(response.body().string());
-                                boolean exist = jsonObject.getBoolean(Utils.NAME_EXIST);
-                                if (!exist) {
-                                    Utils.displayToast(getApplicationContext(), ingredientAdded);
-                                    finish();
-                                } else {
-                                    displayNameAlreadyUsed();
-                                }
-                            } catch (Exception e) {
-                                displayError(errorOccurred);
+                            assert response.body() != null;
+                            if (response.body().getNameExist()) {
+                                displayNameAlreadyUsed();
+                            } else {
+                                Utils.displayToast(getApplicationContext(), ingredientAdded);
+                                finish();
                             }
                         } else {
                             displayError(ingredientAdditionFailed);
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call,
+                    public void onFailure(@NonNull Call<NameExistObject> call,
                                           @NonNull Throwable t) {
                         displayError(ingredientAdditionFailed);
                     }

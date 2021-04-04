@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.data_holders.DietType;
+import com.fitastyclient.data_holders.NameExistObject;
 import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
@@ -180,7 +181,7 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
             throws Exception {
         assert response.body() != null;
         JSONObject jsonObject = new JSONObject(response.body().string());
-        return jsonObject.getBoolean(Utils.USERNAME_EXIST);
+        return jsonObject.getBoolean(Utils.NAME_EXIST);
     }
 
     private void checkUsername() {
@@ -193,26 +194,23 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
             return;
         }
         HttpManager.getRetrofitApi().isUsernameAvailable(username)
-                .enqueue(new Callback<ResponseBody>() {
+                .enqueue(new Callback<NameExistObject>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call,
-                                           @NonNull Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<NameExistObject> call,
+                                           @NonNull Response<NameExistObject> response) {
                         if (response.isSuccessful()) {
-                            try {
-                                if (getUsernameExistFromResponse(response)) {
-                                    displayUsernameAlreadyTaken();
-                                } else {
-                                    displayUsernameAvailable();
-                                }
-                            } catch (Exception e) {
-                                displayUsernameCheckFailed();
+                            assert response.body() != null;
+                            if (response.body().getNameExist()) {
+                                displayUsernameAlreadyTaken();
+                            } else {
+                                displayUsernameAvailable();
                             }
                         } else {
                             displayUsernameCheckFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call,
+                    public void onFailure(@NonNull Call<NameExistObject> call,
                                           @NonNull Throwable t) {
                         displayUsernameCheckFailed();
                     }
@@ -247,37 +245,33 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
         finish();
     }
 
-    private void tryToCreateEditAccount(Response<ResponseBody> response, Account account)
-            throws Exception {
-        if (!getUsernameExistFromResponse(response)) {
+    private void tryToCreateEditAccount(boolean nameExist, Account account) {
+        if (nameExist) {
+            displayUsernameAlreadyTaken();
+        } else {
             if (!this.isCreateNew) sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
             String toastText = (this.isCreateNew) ? accountCreated : accountEdited;
             Utils.displayToast(getApplicationContext(), toastText);
             startMainMenuActivity(account.getUsername());
             finish();
-        } else {
-            displayUsernameAlreadyTaken();
         }
     }
 
-    private Callback<ResponseBody> getCreateEditCallback(final Account account,
+    private Callback<NameExistObject> getCreateEditCallback(final Account account,
                                                          final String failedText) {
-        return new Callback<ResponseBody>() {
+        return new Callback<NameExistObject>() {
             @Override
-            public void onResponse(@NonNull Call<ResponseBody> call,
-                                   @NonNull Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<NameExistObject> call,
+                                   @NonNull Response<NameExistObject> response) {
                 if (response.isSuccessful()) {
-                    try {
-                        tryToCreateEditAccount(response, account);
-                    } catch (Exception e) {
-                        displayError(errorOccurred);
-                    }
+                    assert response.body() != null;
+                    tryToCreateEditAccount(response.body().getNameExist(), account);
                 } else {
                     displayError(failedText);
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call,
+            public void onFailure(@NonNull Call<NameExistObject> call,
                                   @NonNull Throwable t) {
                 displayError(failedText);
             }

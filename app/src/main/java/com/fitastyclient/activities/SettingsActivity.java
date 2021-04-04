@@ -24,7 +24,6 @@ import retrofit2.Response;
 
 public class SettingsActivity extends MyAppCompatActivity {
 
-    static public String actionFailed = "Action failed, please try again.";
     static public String deleteTitle = "Delete Account";
     static public String areYouSureText = "Are you sure you want to delete this account?";
     static public String accountDeleted = "Account Deleted";
@@ -43,31 +42,53 @@ public class SettingsActivity extends MyAppCompatActivity {
         }
     };
 
+    private void clearEditAccountInformation() {
+        TextView view = findViewById(R.id.editAccountInformationText);
+        view.setText(Utils.EMPTY);
+    }
+
+    private void displayEditFailed() {
+        displayActionFailed(R.id.editAccountInformationText);
+    }
+
+    private void displayDeleteFailed() {
+        displayActionFailed(R.id.deleteAccountInformationText);
+    }
+
+    private void tryToDeleteAccount() {
+        HttpManager.getRetrofitApi().deleteAccount(username)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
+                            Utils.displayToast(SettingsActivity.this, accountDeleted);
+                            finish();
+                        } else {
+                            displayDeleteFailed();
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call,
+                                          @NonNull Throwable t) {
+                        displayDeleteFailed();
+                    }
+                });
+    }
+
     private void displayDeletePopup() {
         new AlertDialog.Builder(this, R.style.MyDialogTheme)
                 .setTitle(deleteTitle)
                 .setMessage(areYouSureText)
                 .setPositiveButton(Utils.YES, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        sendBroadcast(new Intent(Utils.FINISH_MAIN_MENU_ACTIVITY));
-                        Utils.displayToast(SettingsActivity.this, accountDeleted);
-                        finish();
+                        tryToDeleteAccount();
                     }
                 })
                 .setNegativeButton(Utils.NO, null)
                 .setIcon(android.R.drawable.stat_notify_error)
                 .show();
-    }
-
-    private void clearEditAccountInformation() {
-        TextView view = findViewById(R.id.editAccountInformationText);
-        view.setText(Utils.EMPTY);
-    }
-
-    private void displayEditAccountFailed() {
-        TextView view = findViewById(R.id.editAccountInformationText);
-        view.setTextColor(getResources().getColor(R.color.red));
-        view.setText(actionFailed);
     }
 
     private void startNewAccountActivity(Account account) {
@@ -81,29 +102,24 @@ public class SettingsActivity extends MyAppCompatActivity {
 
     private void tryToEditAccount() {
         HttpManager.getRetrofitApi().getAccountInformation(this.username)
-                .enqueue(new Callback<ResponseBody>() {
+                .enqueue(new Callback<Account>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call,
-                                           @NonNull Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<Account> call,
+                                           @NonNull Response<Account> response) {
                         if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                Account account = (new Gson()).fromJson(
-                                        response.body().string(), Account.class);
-                                account.setUsername(username);
-                                startNewAccountActivity(account);
-                                clearEditAccountInformation();
-                            } catch (Exception e) {
-                                displayEditAccountFailed();
-                            }
+                            Account account = response.body();
+                            assert account != null;
+                            account.setUsername(username);
+                            startNewAccountActivity(account);
+                            clearEditAccountInformation();
                         } else {
-                            displayEditAccountFailed();
+                            displayEditFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call,
+                    public void onFailure(@NonNull Call<Account> call,
                                           @NonNull Throwable t) {
-                        displayEditAccountFailed();
+                        displayEditFailed();
                     }
                 });
     }

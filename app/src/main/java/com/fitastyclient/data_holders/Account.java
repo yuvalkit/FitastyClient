@@ -25,8 +25,8 @@ public class Account implements Serializable {
     @SerializedName("weight_goal")
     private double weightGoal;
 
-    public Account(String username, String password, int age, boolean isMale, int height, int weight,
-            double activityFactor, DietType dietType, double weightGoal) {
+    public Account(String username, String password, int age, boolean isMale, int height,
+                   int weight, double activityFactor, DietType dietType, double weightGoal) {
         this.username = username;
         this.password = password;
         this.age = age;
