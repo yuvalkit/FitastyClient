@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
-
 import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.data_holders.DietType;
 import com.fitastyclient.data_holders.NameExistObject;
 import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;

@@ -4,19 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-
 import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-import com.google.gson.Gson;
-
 import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,7 +74,7 @@ public class SettingsActivity extends MyAppCompatActivity {
     }
 
     private void displayDeletePopup() {
-        new AlertDialog.Builder(this, R.style.MyDialogTheme)
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
                 .setTitle(deleteTitle)
                 .setMessage(areYouSureText)
                 .setPositiveButton(Utils.YES, new DialogInterface.OnClickListener() {
@@ -89,6 +85,9 @@ public class SettingsActivity extends MyAppCompatActivity {
                 .setNegativeButton(Utils.NO, null)
                 .setIcon(android.R.drawable.stat_notify_error)
                 .show();
+        ((ImageView) Objects.requireNonNull(dialog.findViewById(android.R.id.icon)))
+                .setColorFilter(getColorById(R.color.red),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private void startNewAccountActivity(Account account) {

@@ -1,33 +1,20 @@
 package com.fitastyclient.activities;
 
-import android.content.DialogInterface;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.Dish;
 import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.dialogs.DishInfoDialog;
 import com.fitastyclient.dialogs.IngredientInfoDialog;
-
-import org.w3c.dom.Text;
-
-import java.util.Locale;
 
 public abstract class MyAppCompatActivity extends AppCompatActivity {
 
