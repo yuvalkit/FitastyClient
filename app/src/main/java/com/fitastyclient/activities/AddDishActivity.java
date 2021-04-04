@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -13,10 +12,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.DishToInsert;
@@ -24,16 +20,11 @@ import com.fitastyclient.data_holders.NameExistObject;
 import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
 import com.fitastyclient.http.HttpManager;
-
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

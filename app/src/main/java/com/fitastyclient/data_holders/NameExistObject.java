@@ -1,7 +1,6 @@
 package com.fitastyclient.data_holders;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class NameExistObject implements Serializable {
@@ -16,5 +15,4 @@ public class NameExistObject implements Serializable {
     public boolean getNameExist() {
         return this.nameExist;
     }
-
 }

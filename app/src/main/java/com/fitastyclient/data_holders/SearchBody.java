@@ -1,9 +1,6 @@
 package com.fitastyclient.data_holders;
 
-import androidx.annotation.NonNull;
-
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class SearchBody implements Serializable {

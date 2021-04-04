@@ -1,8 +1,6 @@
 package com.fitastyclient.data_holders;
 
-import com.fitastyclient.data_holders.ShortDish;
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,5 +24,4 @@ public class SearchResult implements Serializable {
     public List<ShortIngredient> getIngredients() {
         return this.ingredients;
     }
-
 }

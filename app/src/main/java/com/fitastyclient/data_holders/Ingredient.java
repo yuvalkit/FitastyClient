@@ -2,7 +2,6 @@ package com.fitastyclient.data_holders;
 
 import com.fitastyclient.Utils;
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class Ingredient implements Serializable {
