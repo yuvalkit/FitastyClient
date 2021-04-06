@@ -53,6 +53,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     static public String mustEnterAmount = "You must enter an amount.";
     static public String itemCanBeAddedOnce = "Each item can be added only once.";
     static public String itemAddedToDishContent = "Item added to dish content.";
+    static public String noItemsFound = "No items found.";
     static public String amountStringFormat = "Amount (%s)";
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -101,10 +102,18 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         displayActionFailed(R.id.searchItemsInfoText);
     }
 
+    private void displayNoItemsFound() {
+        setViewTextAndColor(R.id.searchItemsInfoText, noItemsFound, R.color.gray);
+    }
+
     private void addSearchResultToTable(SearchResult searchResult) {
         this.table.removeAllViews();
         List<ShortIngredient> ingredients = searchResult.getIngredients();
         List<ShortDish> dishes = searchResult.getDishes();
+        if (ingredients.isEmpty() && dishes.isEmpty()) {
+            displayNoItemsFound();
+            return;
+        }
         for (ShortIngredient ingredient : ingredients) {
             addItemToTable(ingredient.getIngredientName(), true, ingredient.getIsLiquid());
         }
@@ -198,7 +207,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         String flag = (isIngredient) ? Utils.ADD_INGREDIENT_TO_TABLE : Utils.ADD_DISH_TO_TABLE;
         Intent intent = new Intent(flag);
         if (isIngredient) {
-            intent.putExtra(Utils.INGREDIENT, new ShortIngredient(itemName, isLiquid ? 1 : 0, amount));
+            intent.putExtra(Utils.INGREDIENT, new ShortIngredient(itemName, isLiquid, amount));
         } else {
             intent.putExtra(Utils.DISH, new ShortDish(itemName, amount));
         }

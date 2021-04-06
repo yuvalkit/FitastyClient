@@ -27,6 +27,8 @@ public class DishInfoDialog extends MyDialogFragment {
     public static int iconSize = 70;
     public static int leftPadding = 10;
     public static int textHeight = 120;
+    static public int heightGaps = 40;
+    static public int maxNameSizeInRow = 22;
 
     public static int nameWidth = 150;
     public static int nameWeight = 3;
@@ -87,10 +89,12 @@ public class DishInfoDialog extends MyDialogFragment {
         row.addView(imageView);
     }
 
-    private void addTextViewToRow(TableRow row, String text, int width, int height, int weight) {
+    private void addTextViewToRow(TableRow row, String text, int width, int weight,
+                                  int heightFactor) {
         TextView view = new TextView(getContext());
+        int height = textHeight + (heightGaps * heightFactor);
         view.setLayoutParams(new TableRow.LayoutParams(width, height, weight));
-        view.setGravity(Gravity.CENTER_VERTICAL);
+        if (heightFactor == 0) view.setGravity(Gravity.CENTER_VERTICAL);
         view.setPadding(leftPadding, 0, 0, 0);
         view.setTextColor(getColorById(R.color.black));
         view.setText(text);
@@ -102,8 +106,9 @@ public class DishInfoDialog extends MyDialogFragment {
         String amountStr = Utils.cleanDoubleToString(ingredient.getAmount());
         String units = ingredient.getUnits();
         TableRow row = new TableRow(getContext());
-        addTextViewToRow(row, ingredientName, nameWidth, textHeight, nameWeight);
-        addTextViewToRow(row, amountStr + units, amountWidth, textHeight, amountWeight);
+        int heightFactor = (ingredientName.length() / maxNameSizeInRow);
+        addTextViewToRow(row, ingredientName, nameWidth, nameWeight, heightFactor);
+        addTextViewToRow(row, amountStr + units, amountWidth, amountWeight, heightFactor);
         addInfoButtonToRow(row, ingredientName, view);
         this.table.addView(row);
     }

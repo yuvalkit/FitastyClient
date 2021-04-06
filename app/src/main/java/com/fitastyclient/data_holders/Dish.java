@@ -16,7 +16,7 @@ public class Dish implements Serializable {
     private double fiber;
     @SerializedName("protein")
     private double protein;
-    @SerializedName("ingredient_name")
+    @SerializedName("ingredients")
     private List<ShortIngredient> ingredients;
 
     public Dish(String dishName, double fat, double carb, double fiber,

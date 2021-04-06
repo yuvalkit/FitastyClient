@@ -10,21 +10,19 @@ public class ShortIngredient implements Serializable {
     protected String ingredientName;
 
     @SerializedName("is_liquid")
-    private Integer isLiquid;
+    private Boolean isLiquid;
 
     @SerializedName("amount")
     private Double amount;
 
-    public ShortIngredient(String ingredientName, Integer isLiquid, Double amount) {
+    public ShortIngredient(String ingredientName, Boolean isLiquid, Double amount) {
         this.ingredientName = ingredientName;
         this.isLiquid = isLiquid;
         this.amount = amount;
     }
 
-    public ShortIngredient(String ingredientName, Integer isLiquid) {
-        this.ingredientName = ingredientName;
-        this.isLiquid = isLiquid;
-        this.amount = null;
+    public ShortIngredient(String ingredientName, Boolean isLiquid) {
+        this(ingredientName, isLiquid, null);
     }
 
     public ShortIngredient(String ingredientName, Double amount) {
@@ -36,7 +34,7 @@ public class ShortIngredient implements Serializable {
     }
 
     public Boolean getIsLiquid() {
-        return this.isLiquid == 1;
+        return this.isLiquid;
     }
 
     public double getAmount() {
@@ -44,7 +42,7 @@ public class ShortIngredient implements Serializable {
     }
 
     public String getUnits() {
-        if (this.isLiquid == 1) return Utils.ML;
+        if (this.isLiquid) return Utils.ML;
         else return Utils.GRAM;
     }
 }
