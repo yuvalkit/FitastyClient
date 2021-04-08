@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name=".activities.NewEditDietDiaryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".activities.MainMenuActivity"/>
         <activity android:name=".activities.NewEditAccountActivity"/>
+<!--        <activity android:name=".activities.NewEditDietDiaryActivity"/>-->
+        <activity android:name=".activities.AddMealActivity"/>
         <activity android:name=".activities.AddDishActivity"/>
         <activity android:name=".activities.AddIngredientActivity"/>
         <activity android:name=".activities.SearchItemsActivity"/>

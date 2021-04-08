@@ -5,13 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
@@ -68,8 +66,8 @@ public class AddDishActivity extends MyAppCompatActivity {
             String action = intent.getAction();
             assert action != null;
             if (action.equals(Utils.ADD_INGREDIENT_TO_TABLE)) {
-                ShortIngredient ingredient = (ShortIngredient) intent
-                        .getSerializableExtra(Utils.INGREDIENT);
+                ShortIngredient ingredient = (ShortIngredient)
+                        intent.getSerializableExtra(Utils.INGREDIENT);
                 assert ingredient != null;
                 String ingredientName = ingredient.getIngredientName();
                 if (ingredientsNameSet.contains(ingredientName)) {
@@ -107,7 +105,9 @@ public class AddDishActivity extends MyAppCompatActivity {
 
     private View.OnClickListener itemsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            startActivity(new Intent(AddDishActivity.this, SearchItemsActivity.class));
+            Intent intent = getIntentWithBooleanFlag(AddDishActivity.this,
+                    SearchItemsActivity.class, Utils.IS_ADD_MEAL, false);
+            startActivity(intent);
         }
     };
 
@@ -216,33 +216,16 @@ public class AddDishActivity extends MyAppCompatActivity {
         row.addView(view);
     }
 
-    private void addTextViewToRow(TableRow row, String text, int textColorId,
-                                  int viewWidth, int viewHeight, int viewWeight,
-                                  int leftPadding, int backgroundColorId, boolean toCenter,
-                                  int heightFactor) {
-        TextView view = new TextView(this);
-        viewHeight += (heightGaps * heightFactor);
-        view.setLayoutParams(new TableRow.LayoutParams(viewWidth, viewHeight, viewWeight));
-        if (toCenter) view.setGravity(Gravity.CENTER_VERTICAL);
-        view.setPadding(leftPadding, 0, 0, 0);
-        if (backgroundColorId != 0) view.setBackgroundColor(getColorById(backgroundColorId));
-        if (!text.isEmpty()) {
-            view.setTextColor(getColorById(textColorId));
-            view.setText(text);
-        }
-        row.addView(view);
-    }
-
     private void addItemToTable(String type, String itemName, String amount,
                                 boolean toCenter, boolean isIngredient) {
         TableRow row = new TableRow(this);
         int heightFactor = (itemName.length() / maxNameSizeInRow);
         addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight,
-                smallWeight, typePadding, 0, toCenter, heightFactor);
+                smallWeight, typePadding, 0, toCenter, heightGaps, heightFactor);
         addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight,
-                bigWeight, namePadding, 0, toCenter, heightFactor);
+                bigWeight, namePadding, 0, toCenter, heightGaps, heightFactor);
         addTextViewToRow(row, amount, R.color.darkBlue, amountWidth, itemRowHeight,
-                smallWeight, amountPadding, 0, toCenter, heightFactor);
+                smallWeight, amountPadding, 0, toCenter, heightGaps, heightFactor);
         addDeleteButtonToRow(row, itemName, isIngredient);
         this.table.addView(row);
     }
@@ -269,13 +252,13 @@ public class AddDishActivity extends MyAppCompatActivity {
     private void setTableTitles() {
         TableRow titlesRow = new TableRow(this);
         addTextViewToRow(titlesRow, typeTitle, R.color.black, typeWidth, titleRowHeight,
-                smallWeight, typePadding, titleBackgroundColor, true, 0);
+                smallWeight, typePadding, titleBackgroundColor, true, 0, 0);
         addTextViewToRow(titlesRow, nameTitle, R.color.black, nameWidth, titleRowHeight,
-                bigWeight, namePadding, titleBackgroundColor, true, 0);
+                bigWeight, namePadding, titleBackgroundColor, true, 0, 0);
         addTextViewToRow(titlesRow, amountTitle, R.color.black, amountWidth, titleRowHeight,
-                smallWeight, amountPadding, titleBackgroundColor, true, 0);
+                smallWeight, amountPadding, titleBackgroundColor, true, 0, 0);
         addTextViewToRow(titlesRow, Utils.EMPTY, R.color.black, deleteWidth, titleRowHeight,
-                0, 0, titleBackgroundColor, true, 0);
+                0, 0, titleBackgroundColor, true, 0, 0);
         this.table.addView(titlesRow);
     }
 

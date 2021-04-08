@@ -33,10 +33,8 @@ public class LoginActivity extends MyAppCompatActivity {
 
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent = new Intent(LoginActivity.this, NewEditAccountActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(Utils.IS_CREATE_NEW, true);
-            intent.putExtras(bundle);
+            Intent intent = getIntentWithBooleanFlag(LoginActivity.this,
+                    NewEditAccountActivity.class, Utils.IS_CREATE_NEW, true);
             startActivity(intent);
         }
     };

@@ -91,6 +91,6 @@ public interface Api {
 
     @POST("/json_echo")
     Call<ResponseBody> jsonEcho(
-            @Body SearchBody searchBody
+            @Body DishToInsert body
     );
 }

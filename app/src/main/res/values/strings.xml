@@ -41,10 +41,10 @@
     <string name="solid">Solid</string>
     <string name="liquid">Liquid</string>
     <string name="serving_size">Serving size:</string>
-    <string name="fat">Fat:</string>
-    <string name="carb">Carb:</string>
-    <string name="fiber">Fiber:</string>
-    <string name="protein">Protein:</string>
+    <string name="fat_colon">Fat:</string>
+    <string name="carb_colon">Carb:</string>
+    <string name="fiber_colon">Fiber:</string>
+    <string name="protein_colon">Protein:</string>
     <string name="gram">g</string>
     <string name="attributes">Attributes:</string>
     <string name="vegan">Vegan</string>
@@ -55,6 +55,7 @@
     <!--  search_items_layout strings  -->
     <string name="search_items">Search Items</string>
     <string name="search_for">Search for:</string>
+    <string name="nutrition_facts_filter">Nutrition Facts Filter</string>
     <string name="ingredients">Ingredients</string>
     <string name="dishes">Dishes</string>
     <string name="type_to_search">Type to search…</string>
@@ -71,5 +72,32 @@
     <string name="dish_information">Dish Information</string>
     <string name="total_nutrition_facts">Total nutrition facts:</string>
     <string name="ingredients_colon">Ingredients:</string>
+
+    <!--  new_edit_diet_diary_layout strings  -->
+    <string name="create_new_diet_diary">Create New Diet Diary</string>
+    <string name="create">Create</string>
+    <string name="diet_diary_name">Diet diary name:</string>
+    <string name="meals">Meals:</string>
+    <string name="calorie_information_summary">Calorie information summary:</string>
+    <string name="recommended_for_you">Recommended For You</string>
+    <string name="from_selected_meals">From\nSelected\nMeals</string>
+    <string name="difference">Difference</string>
+    <string name="calories_colon">Calories:</string>
+    <string name="calories">Calories</string>
+    <string name="fat">Fat</string>
+    <string name="carb">Carb</string>
+    <string name="fiber">Fiber</string>
+    <string name="protein">Protein</string>
+
+    <!--  add_edit_meal_layout strings  -->
+    <string name="meal_calorie_information">Meal calorie information:</string>
+
+    <!--  nutrition_facts_filter_dialog strings  -->
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="filter_is_per_serving">For ingredients, the filter is per serving size.</string>
+    <string name="leave_empty_for_no_filter">Leave a fact value empty for no filter on that fact.</string>
+    <string name="reset_to_recommended">Reset to recommended values</string>
+
 
 </resources>

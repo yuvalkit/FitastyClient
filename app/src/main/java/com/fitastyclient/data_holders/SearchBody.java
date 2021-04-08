@@ -52,8 +52,12 @@ public class SearchBody implements Serializable {
     }
 
     public SearchBody(String nameBegin, boolean isVegan, boolean isVegetarian,
-                      boolean isGlutenFree, boolean isLactoseFree) {
-        this(nameBegin, null, null, null, null, null, null, null, null,
+                      boolean isGlutenFree, boolean isLactoseFree,
+                      NutritionFactsFilter factsFilter) {
+        this(nameBegin, factsFilter.getMaxFat(), factsFilter.getMaxCarb(),
+                factsFilter.getMaxFiber(), factsFilter.getMaxProtein(), factsFilter.getMinFat(),
+                factsFilter.getMinCarb(), factsFilter.getMinFiber(), factsFilter.getMinProtein(),
                 isVegan, isVegetarian, isGlutenFree, isLactoseFree);
     }
+
 }

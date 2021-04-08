@@ -1,11 +1,16 @@
 package com.fitastyclient.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -19,7 +24,6 @@ import com.fitastyclient.dialogs.IngredientInfoDialog;
 public abstract class MyAppCompatActivity extends AppCompatActivity {
 
     static public String requiredField = "This field is required.";
-    static public String errorOccurred = "An error occurred.";
     static public String ingredientType = "Ingredient";
     static public String dishType = "Dish";
 
@@ -95,7 +99,7 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         return getResources().getColor(colorId);
     }
 
-    private void showDialogFragment(DialogFragment dialogFragment) {
+    protected void showDialogFragment(DialogFragment dialogFragment) {
         dialogFragment.show(getSupportFragmentManager(), null);
     }
 
@@ -106,4 +110,39 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
     protected void displayDishInfoDialog(Dish dish) {
         showDialogFragment(new DishInfoDialog(dish));
     }
+
+    protected void addTextViewToRow(TableRow row, String text, int textColorId,
+                                  int viewWidth, int viewHeight, int viewWeight,
+                                  int leftPadding, int backgroundColorId, boolean toCenter,
+                                  int heightGaps, int heightFactor) {
+        TextView view = new TextView(this);
+        viewHeight += (heightGaps * heightFactor);
+        view.setLayoutParams(new TableRow.LayoutParams(viewWidth, viewHeight, viewWeight));
+        if (toCenter) view.setGravity(Gravity.CENTER_VERTICAL);
+        view.setPadding(leftPadding, 0, 0, 0);
+        if (backgroundColorId != 0) view.setBackgroundColor(getColorById(backgroundColorId));
+        if (!text.isEmpty()) {
+            view.setTextColor(getColorById(textColorId));
+            view.setText(text);
+        }
+        row.addView(view);
+    }
+
+    protected void setViewWithValue(int viewId, double value) {
+        setViewText(viewId, Utils.cleanDoubleToString(value));
+    }
+
+    protected void setViewWithFact(int viewId, double value) {
+        setViewText(viewId, Utils.cleanDoubleToString(value) + Utils.GRAM);
+    }
+
+    protected Intent getIntentWithBooleanFlag(Context fromContext, Class<?> toClass,
+                                              String flagText, boolean flagValue) {
+        Intent intent = new Intent(fromContext, toClass);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(flagText, flagValue);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 }

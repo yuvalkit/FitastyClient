@@ -9,6 +9,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
@@ -39,15 +40,15 @@ public class DishInfoDialog extends MyDialogFragment {
     private Dish dish;
     private TableLayout table;
 
-    private void clearIngredientInfo(View view) {
-        setViewText(view, R.id.dishInfoIngredientInfoText, Utils.EMPTY);
+    private void clearIngredientInfo() {
+        setViewText(R.id.dishInfoIngredientInfoText, Utils.EMPTY);
     }
 
-    private void displayIngredientInfoFailed(View view) {
-        setViewText(view, R.id.dishInfoIngredientInfoText, Utils.actionFailed);
+    private void displayIngredientInfoFailed() {
+        setViewText(R.id.dishInfoIngredientInfoText, Utils.actionFailed);
     }
 
-    private void getIngredientInfo(String ingredientName, final View view) {
+    private void getIngredientInfo(String ingredientName) {
         HttpManager.getRetrofitApi().getIngredientInfo(ingredientName)
                 .enqueue(new Callback<Ingredient>() {
             @Override
@@ -60,18 +61,18 @@ public class DishInfoDialog extends MyDialogFragment {
                     dialogFragment.show((Objects.requireNonNull(getActivity()))
                             .getSupportFragmentManager().beginTransaction(), null);
                 } else {
-                    displayIngredientInfoFailed(view);
+                    displayIngredientInfoFailed();
                 }
             }
             @Override
             public void onFailure(@NonNull Call<Ingredient> call,
                                   @NonNull Throwable t) {
-                displayIngredientInfoFailed(view);
+                displayIngredientInfoFailed();
             }
         });
     }
 
-    private void addInfoButtonToRow(TableRow row, final String ingredientName, final View view) {
+    private void addInfoButtonToRow(TableRow row, final String ingredientName) {
         final ImageView imageView = new ImageView(getContext());
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(iconSize, iconSize);
         layoutParams.gravity = Gravity.CENTER;
@@ -82,8 +83,8 @@ public class DishInfoDialog extends MyDialogFragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearIngredientInfo(view);
-                getIngredientInfo(ingredientName, view);
+                clearIngredientInfo();
+                getIngredientInfo(ingredientName);
             }
         });
         row.addView(imageView);
@@ -101,7 +102,7 @@ public class DishInfoDialog extends MyDialogFragment {
         row.addView(view);
     }
 
-    private void addIngredientToTable(ShortIngredient ingredient, View view) {
+    private void addIngredientToTable(ShortIngredient ingredient) {
         String ingredientName = ingredient.getIngredientName();
         String amountStr = Utils.cleanDoubleToString(ingredient.getAmount());
         String units = ingredient.getUnits();
@@ -109,25 +110,21 @@ public class DishInfoDialog extends MyDialogFragment {
         int heightFactor = (ingredientName.length() / maxNameSizeInRow);
         addTextViewToRow(row, ingredientName, nameWidth, nameWeight, heightFactor);
         addTextViewToRow(row, amountStr + units, amountWidth, amountWeight, heightFactor);
-        addInfoButtonToRow(row, ingredientName, view);
+        addInfoButtonToRow(row, ingredientName);
         this.table.addView(row);
     }
 
-    protected void populateFieldsFromView(View view) {
+    private void populateFields() {
         String dishName = this.dish.getDishName();
-        String fatStr = Utils.cleanDoubleToString(this.dish.getFat());
-        String carbStr = Utils.cleanDoubleToString(this.dish.getCarb());
-        String fiberStr = Utils.cleanDoubleToString(this.dish.getFiber());
-        String proteinStr = Utils.cleanDoubleToString(this.dish.getProtein());
-        setViewText(view, R.id.dishInfoNameText, dishName);
-        setViewText(view, R.id.dishInfoFatText, fatStr + Utils.GRAM);
-        setViewText(view, R.id.dishInfoCarbText, carbStr + Utils.GRAM);
-        setViewText(view, R.id.dishInfoFiberText, fiberStr + Utils.GRAM);
-        setViewText(view, R.id.dishInfoProteinText, proteinStr + Utils.GRAM);
+        setViewText(R.id.dishInfoNameText, dishName);
+        setViewToGramsValue(R.id.dishInfoFatText, this.dish.getFat());
+        setViewToGramsValue(R.id.dishInfoCarbText, this.dish.getCarb());
+        setViewToGramsValue(R.id.dishInfoFiberText, this.dish.getFiber());
+        setViewToGramsValue(R.id.dishInfoProteinText, this.dish.getProtein());
         List<ShortIngredient> ingredients = this.dish.getIngredients();
-        this.table = view.findViewById(R.id.dishInfoIngredientsTable);
+        this.table = this.view.findViewById(R.id.dishInfoIngredientsTable);
         for (ShortIngredient ingredient : ingredients) {
-            addIngredientToTable(ingredient, view);
+            addIngredientToTable(ingredient);
         }
     }
 
@@ -138,7 +135,11 @@ public class DishInfoDialog extends MyDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return getDialog(R.layout.dish_info_dialog);
+        AlertDialog.Builder builder = getBuilder();
+        setInflaterView(R.layout.dish_info_dialog);
+        setCloseButton(builder);
+        populateFields();
+        return builder.create();
     }
 
 }

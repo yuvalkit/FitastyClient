@@ -17,21 +17,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
+import com.fitastyclient.data_holders.Account;
+import com.fitastyclient.data_holders.CalorieInfo;
 import com.fitastyclient.data_holders.Dish;
 import com.fitastyclient.data_holders.Ingredient;
+import com.fitastyclient.data_holders.NutritionFactsFilter;
 import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
 import com.fitastyclient.data_holders.SearchBody;
 import com.fitastyclient.data_holders.SearchResult;
+import com.fitastyclient.dialogs.DishInfoDialog;
+import com.fitastyclient.dialogs.NutritionFactsFilterDialog;
 import com.fitastyclient.http.HttpManager;
 import java.util.List;
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchItemsActivity extends MyAppCompatActivity {
-
-    private TableLayout table;
 
     static public int typeWidth = 500;
     static public int nameWidth = 800;
@@ -56,6 +61,11 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     static public String noItemsFound = "No items found.";
     static public String amountStringFormat = "Amount (%s)";
 
+    private TableLayout table;
+    private CalorieInfo recommendedFacts;
+    private NutritionFactsFilter factsFilter;
+    private boolean isAddMeal;
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context arg, Intent intent) {
@@ -66,6 +76,9 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             } else if (action.equals(Utils.ITEM_ADDED_TO_DISH_CONTENT)) {
                 setViewTextAndColor(R.id.searchItemsInfoText,
                         itemAddedToDishContent, R.color.green);
+            } else if (action.equals(Utils.UPDATE_FACTS_FILTER)) {
+                factsFilter = (NutritionFactsFilter)
+                        intent.getSerializableExtra(Utils.FACTS_FILTER);
             }
         }
     };
@@ -77,13 +90,22 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         }
     };
 
+    private View.OnClickListener nutritionFactsFilterButtonClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            showDialogFragment(new NutritionFactsFilterDialog(
+                    factsFilter, recommendedFacts, isAddMeal));
+        }
+    };
+
+
     private SearchBody getSearchBodyFromFields() {
         String nameBegin = getTextFromView(R.id.searchItemInput);
         boolean isVegan = isCheckBoxChecked(R.id.veganCheckBox);
         boolean isVegetarian = isCheckBoxChecked(R.id.vegetarianCheckBox);
         boolean isGlutenFree = isCheckBoxChecked(R.id.glutenFreeCheckBox);
         boolean isLactoseFree = isCheckBoxChecked(R.id.lactoseFreeCheckBox);
-        return new SearchBody(nameBegin, isVegan, isVegetarian, isGlutenFree, isLactoseFree);
+        return new SearchBody(nameBegin, isVegan, isVegetarian, isGlutenFree,
+                isLactoseFree, this.factsFilter);
     }
 
     private void clearSearchInfoText() {
@@ -152,19 +174,6 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                 });
     }
 
-    private void addTextViewToRow(TableRow row, String text, int textColorId,
-                                  int viewWidth, int viewHeight, int heightFactor) {
-        TextView view = new TextView(this);
-        viewHeight += (heightGaps * heightFactor);
-        view.setLayoutParams(new TableRow.LayoutParams(viewWidth, viewHeight, viewWeight));
-        view.setPadding(viewLeftPadding, 0, 0, 0);
-        if (!text.isEmpty()) {
-            view.setTextColor(getColorById(textColorId));
-            view.setText(text);
-        }
-        row.addView(view);
-    }
-
     private void getItemInfo(String itemName, boolean isIngredient) {
         if (isIngredient) getIngredientInfo(itemName);
         else getDishInfo(itemName);
@@ -176,6 +185,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                     public void onResponse(@NonNull Call<T> call,
                                            @NonNull Response<T> response) {
                         if (response.isSuccessful()) {
+                            clearSearchInfoText();
                             T item = response.body();
                             assert item != null;
                             if (isIngredient) displayIngredientInfoDialog((Ingredient) item);
@@ -277,8 +287,10 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         String type = (isIngredient) ? ingredientType : dishType;
         int heightFactor = (itemName.length() / maxNameSizeInRow);
         addInfoButtonToRow(row, itemName, isIngredient);
-        addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight, heightFactor);
-        addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight, heightFactor);
+        addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight, viewWeight,
+                viewLeftPadding, 0, false, heightGaps, heightFactor);
+        addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight, viewWeight,
+                viewLeftPadding, 0, false, heightGaps, heightFactor);
         EditText editText = getAmountInputBar(isIngredient, isLiquid);
         row.addView(editText);
         addAddButtonToRow(row, itemName, isIngredient, isLiquid, editText);
@@ -288,9 +300,22 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     private void setComponents() {
         findViewById(R.id.searchItemsCancelIcon).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.searchButton).setOnClickListener(this.searchButtonClick);
+        findViewById(R.id.nutritionFactsFilterButton)
+                .setOnClickListener(this.nutritionFactsFilterButtonClick);
         this.table = findViewById(R.id.searchedItemsTable);
+        this.isAddMeal = Objects.requireNonNull(getIntent().getExtras())
+                .getBoolean(Utils.IS_ADD_MEAL);
+        if (this.isAddMeal) {
+            this.recommendedFacts = (CalorieInfo) getIntent()
+                    .getSerializableExtra(Utils.CALORIE_INFO);
+            assert recommendedFacts != null;
+            this.factsFilter = new NutritionFactsFilter(this.recommendedFacts);
+        } else {
+            this.factsFilter = new NutritionFactsFilter();
+        }
         registerReceiver(broadcastReceiver, new IntentFilter(Utils.ITEM_CAN_BE_ADDED_ONCE));
         registerReceiver(broadcastReceiver, new IntentFilter(Utils.ITEM_ADDED_TO_DISH_CONTENT));
+        registerReceiver(broadcastReceiver, new IntentFilter(Utils.UPDATE_FACTS_FILTER));
     }
 
     @Override

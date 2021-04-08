@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#0046BF</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="backgroundColor">#DBF3FB</color>
+    <color name="darkerBackgroundColor">#9EE2F8</color>
 
     <!--  regular colors  -->
     <color name="black">#000000</color>
