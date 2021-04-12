@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
@@ -114,7 +116,7 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
     protected void addTextViewToRow(TableRow row, String text, int textColorId,
                                   int viewWidth, int viewHeight, int viewWeight,
                                   int leftPadding, int backgroundColorId, boolean toCenter,
-                                  int heightGaps, int heightFactor) {
+                                  int heightGaps, int heightFactor, int textSize) {
         TextView view = new TextView(this);
         viewHeight += (heightGaps * heightFactor);
         view.setLayoutParams(new TableRow.LayoutParams(viewWidth, viewHeight, viewWeight));
@@ -122,7 +124,8 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         view.setPadding(leftPadding, 0, 0, 0);
         if (backgroundColorId != 0) view.setBackgroundColor(getColorById(backgroundColorId));
         if (!text.isEmpty()) {
-            view.setTextColor(getColorById(textColorId));
+            if (textColorId != 0) view.setTextColor(getColorById(textColorId));
+            if (textSize != 0) view.setTextSize(textSize);
             view.setText(text);
         }
         row.addView(view);
@@ -143,6 +146,36 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         bundle.putBoolean(flagText, flagValue);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    protected ImageView getImageView(int icon, int size, int colorId, int leftPadding) {
+        ImageView view = new ImageView(this);
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(size, size);
+        layoutParams.gravity = Gravity.CENTER;
+        view.setLayoutParams(layoutParams);
+        view.setImageResource(icon);
+        view.setPadding(leftPadding, 0, 0, 0);
+        if (colorId != 0) {
+            view.setColorFilter(getColorById(colorId), android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+        return view;
+    }
+
+    protected void addEmptyTextViewToRow(TableRow row, int width, int height,
+                                         int backgroundColorId) {
+        addTextViewToRow(row, Utils.EMPTY, R.color.black, width, height,
+                0, 0, backgroundColorId, true, 0, 0, 0);
+    }
+
+    protected void deleteItemFromTable(View view) {
+        View row = (View) view.getParent();
+        ViewGroup container = ((ViewGroup)row.getParent());
+        container.removeView(row);
+        container.invalidate();
+    }
+
+    protected void makeViewInvisible(int viewId) {
+        findViewById(viewId).setVisibility(View.INVISIBLE);
     }
 
 }

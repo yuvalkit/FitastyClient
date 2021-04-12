@@ -78,8 +78,12 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
         public void onClick(View v) {
             clearInformationText(R.id.createEditInformationText);
             if (checkAllFields()) {
-                if (isCreateNew) createNewAccount();
-                else editAccount();
+                if (isCreateNew) {
+                    createNewAccount();
+                }
+                else {
+                    editAccount();
+                }
             }
         }
     };
@@ -173,13 +177,6 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
         if (isFieldEmptyQuery(heightViewId, heightInfoId)) valid = false;
         if (isFieldEmptyQuery(weightViewId, weightInfoId)) valid = false;
         return valid;
-    }
-
-    private boolean getUsernameExistFromResponse(Response<ResponseBody> response)
-            throws Exception {
-        assert response.body() != null;
-        JSONObject jsonObject = new JSONObject(response.body().string());
-        return jsonObject.getBoolean(Utils.NAME_EXIST);
     }
 
     private void checkUsername() {
@@ -330,7 +327,7 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
         findViewById(R.id.checkUsernameButton).setOnClickListener(this.checkUsernameButtonClick);
         findViewById(R.id.createEditButton).setOnClickListener(this.createEditButtonClick);
         this.isCreateNew = Objects.requireNonNull(getIntent().getExtras())
-                .getBoolean(Utils.IS_CREATE_NEW);
+                .getBoolean(Utils.IS_CREATE_NEW_ACCOUNT);
         setTitleText((this.isCreateNew) ? createNewAccount : editAccount);
         setButtonText((this.isCreateNew) ? createText : editText);
         if (!this.isCreateNew) {

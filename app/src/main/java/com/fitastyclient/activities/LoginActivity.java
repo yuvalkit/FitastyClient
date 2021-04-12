@@ -34,7 +34,7 @@ public class LoginActivity extends MyAppCompatActivity {
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = getIntentWithBooleanFlag(LoginActivity.this,
-                    NewEditAccountActivity.class, Utils.IS_CREATE_NEW, true);
+                    NewEditAccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, true);
             startActivity(intent);
         }
     };

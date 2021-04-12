@@ -92,7 +92,7 @@ public class SettingsActivity extends MyAppCompatActivity {
 
     private void startNewAccountActivity(Account account) {
         Intent intent = getIntentWithBooleanFlag(SettingsActivity.this,
-                NewEditAccountActivity.class, Utils.IS_CREATE_NEW, false);
+                NewEditAccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, false);
         intent.putExtra(Utils.ACCOUNT, account);
         startActivity(intent);
     }

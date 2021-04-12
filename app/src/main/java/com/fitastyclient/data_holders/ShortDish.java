@@ -28,4 +28,18 @@ public class ShortDish implements Serializable {
     public double getPercent() {
         return this.percent;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        ShortDish other = (ShortDish) obj;
+        return this.dishName.equals(other.getDishName())
+                && this.percent.equals(other.getPercent());
+    }
+
 }

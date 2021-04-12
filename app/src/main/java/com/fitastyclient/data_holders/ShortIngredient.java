@@ -45,4 +45,18 @@ public class ShortIngredient implements Serializable {
         if (this.isLiquid) return Utils.ML;
         else return Utils.GRAM;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        ShortIngredient other = (ShortIngredient) obj;
+        return this.ingredientName.equals(other.getIngredientName())
+                && this.isLiquid.equals(other.getIsLiquid())
+                && this.amount.equals(other.getAmount());
+    }
 }

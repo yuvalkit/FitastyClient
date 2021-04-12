@@ -23,32 +23,40 @@ public class Utils {
     static public String NO = "No";
     static public String USERNAME = "username";
     static public String FOUND = "found";
-    static public String NAME_EXIST = "name_exist";
     static public String ACCOUNT = "account";
     static public String CALORIE_INFO = "calorie_info";
     static public String INGREDIENT = "ingredient";
     static public String DISH = "dish";
+    static public String MEAL = "meal";
     static public String FACTS_FILTER = "facts_filter";
     static public String MEAL_ID = "meal_id";
     static public String GRAM = "g";
     static public String ML = "ml";
 
-    static public String IS_CREATE_NEW = "is_create_new";
+    static public String IS_CREATE_NEW_ACCOUNT = "is_create_new_account";
     static public String IS_ADD_MEAL = "is_add_meal";
+    static public String MEAL_ACTIVITY_TYPE = "meal_activity_type";
 
     static public String factsPer100prefix = "Nutrition facts per 100";
     static public String actionFailed = "Action failed, please try again.";
 
     static public String FINISH_MAIN_MENU_ACTIVITY = "finish_main_menu_activity";
+    static public String DISH_FLAG = "dish_";
+    static public String MEAL_FLAG = "meal_";
     static public String ADD_INGREDIENT_TO_TABLE = "add_ingredient_to_table";
     static public String ADD_DISH_TO_TABLE = "add_dish_to_table";
     static public String ITEM_CAN_BE_ADDED_ONCE = "item_can_be_added_once";
     static public String ITEM_ADDED_TO_DISH_CONTENT = "item_added_to_dish_content";
+    static public String ITEM_ADD_FAILED = "item_add_failed";
     static public String UPDATE_FACTS_FILTER = "update_facts_filter";
+    static public String ADD_MEAL_TO_DIET_DIARY = "add_meal_to_diet_diary";
+    static public String EDIT_DIET_DIARY_MEAL = "edit_diet_diary_meal";
 
     static public double fatCalorieFactor = 9;
     static public double carbCalorieFactor = 4;
     static public double proteinCalorieFactor = 4;
+
+    public enum MealActivityType { ADD, EDIT, INFO }
 
     static public void log(String text) {
         Log.d("DEBUG", text);

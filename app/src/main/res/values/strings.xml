@@ -89,7 +89,7 @@
     <string name="fiber">Fiber</string>
     <string name="protein">Protein</string>
 
-    <!--  add_edit_meal_layout strings  -->
+    <!--  meal_layout strings  -->
     <string name="meal_calorie_information">Meal calorie information:</string>
 
     <!--  nutrition_facts_filter_dialog strings  -->

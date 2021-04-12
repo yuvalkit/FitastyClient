@@ -79,6 +79,8 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             } else if (action.equals(Utils.UPDATE_FACTS_FILTER)) {
                 factsFilter = (NutritionFactsFilter)
                         intent.getSerializableExtra(Utils.FACTS_FILTER);
+            } else if (action.equals(Utils.ITEM_ADD_FAILED)) {
+                displayItemInfoFailed();
             }
         }
     };
@@ -174,11 +176,6 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                 });
     }
 
-    private void getItemInfo(String itemName, boolean isIngredient) {
-        if (isIngredient) getIngredientInfo(itemName);
-        else getDishInfo(itemName);
-    }
-
     private <T> void sendGetItemInfoRequest(Call<T> call, final boolean isIngredient) {
         call.enqueue(new Callback<T>() {
                     @Override
@@ -212,9 +209,15 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                 .getDishInfo(dishName), false);
     }
 
-    private void sendItemToAddDishActivity(String itemName, final boolean isIngredient,
+    private void getItemInfo(String itemName, boolean isIngredient) {
+        if (isIngredient) getIngredientInfo(itemName);
+        else getDishInfo(itemName);
+    }
+
+    private void sendItemToParentActivity(String itemName, final boolean isIngredient,
                                            boolean isLiquid, double amount) {
-        String flag = (isIngredient) ? Utils.ADD_INGREDIENT_TO_TABLE : Utils.ADD_DISH_TO_TABLE;
+        String flag = (this.isAddMeal) ? Utils.MEAL_FLAG : Utils.DISH_FLAG;
+        flag += (isIngredient) ? Utils.ADD_INGREDIENT_TO_TABLE : Utils.ADD_DISH_TO_TABLE;
         Intent intent = new Intent(flag);
         if (isIngredient) {
             intent.putExtra(Utils.INGREDIENT, new ShortIngredient(itemName, isLiquid, amount));
@@ -222,18 +225,6 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             intent.putExtra(Utils.DISH, new ShortDish(itemName, amount));
         }
         sendBroadcast(intent);
-    }
-
-    private ImageView getImageView(int icon, int size, int colorId, int leftPadding) {
-        ImageView view = new ImageView(this);
-        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(size, size);
-        layoutParams.gravity = Gravity.CENTER;
-        view.setLayoutParams(layoutParams);
-        view.setImageResource(icon);
-        view.setPadding(leftPadding, 0, 0, 0);
-        if (colorId != 0) view.setColorFilter(getColorById(colorId),
-                android.graphics.PorterDuff.Mode.MULTIPLY);
-        return view;
     }
 
     private void addAddButtonToRow(TableRow row, final String itemName, final boolean isIngredient,
@@ -250,7 +241,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                 clearSearchInfoText();
                 double amount = Double.parseDouble(amountText);
                 if (!isIngredient) amount /= 100;
-                sendItemToAddDishActivity(itemName, isIngredient, isLiquid, amount);
+                sendItemToParentActivity(itemName, isIngredient, isLiquid, amount);
             }
         });
         row.addView(view);
@@ -288,9 +279,9 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         int heightFactor = (itemName.length() / maxNameSizeInRow);
         addInfoButtonToRow(row, itemName, isIngredient);
         addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight, viewWeight,
-                viewLeftPadding, 0, false, heightGaps, heightFactor);
+                viewLeftPadding, 0, false, heightGaps, heightFactor, 0);
         addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight, viewWeight,
-                viewLeftPadding, 0, false, heightGaps, heightFactor);
+                viewLeftPadding, 0, false, heightGaps, heightFactor, 0);
         EditText editText = getAmountInputBar(isIngredient, isLiquid);
         row.addView(editText);
         addAddButtonToRow(row, itemName, isIngredient, isLiquid, editText);
@@ -313,9 +304,11 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         } else {
             this.factsFilter = new NutritionFactsFilter();
         }
-        registerReceiver(broadcastReceiver, new IntentFilter(Utils.ITEM_CAN_BE_ADDED_ONCE));
-        registerReceiver(broadcastReceiver, new IntentFilter(Utils.ITEM_ADDED_TO_DISH_CONTENT));
-        registerReceiver(broadcastReceiver, new IntentFilter(Utils.UPDATE_FACTS_FILTER));
+        registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ITEM_CAN_BE_ADDED_ONCE));
+        registerReceiver(this.broadcastReceiver,
+                new IntentFilter(Utils.ITEM_ADDED_TO_DISH_CONTENT));
+        registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.UPDATE_FACTS_FILTER));
+        registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ITEM_ADD_FAILED));
     }
 
     @Override

@@ -15,7 +15,7 @@
             android:id="@+id/createNewDietDiaryButton"
             android:layout_width="80dp"
             android:layout_height="39dp"
-            android:layout_marginTop="910dp"
+            android:layout_marginTop="870dp"
             android:layout_marginBottom="60dp"
             android:background="@color/lightBlue"
             android:text="@string/create"
@@ -160,7 +160,7 @@
         <ScrollView
             android:id="@+id/mealsTableScrollView"
             android:layout_width="350dp"
-            android:layout_height="257dp"
+            android:layout_height="220dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="15dp"
             android:layout_weight="1"
@@ -177,7 +177,7 @@
             <TableLayout
                 android:id="@+id/mealsTable"
                 android:layout_width="350dp"
-                android:layout_height="257dp"
+                android:layout_height="220dp"
                 android:divider="?android:listDivider"
                 android:showDividers="middle" />
 

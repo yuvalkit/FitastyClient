@@ -22,7 +22,7 @@
         <activity android:name=".activities.MainMenuActivity"/>
         <activity android:name=".activities.NewEditAccountActivity"/>
 <!--        <activity android:name=".activities.NewEditDietDiaryActivity"/>-->
-        <activity android:name=".activities.AddMealActivity"/>
+        <activity android:name=".activities.MealActivity"/>
         <activity android:name=".activities.AddDishActivity"/>
         <activity android:name=".activities.AddIngredientActivity"/>
         <activity android:name=".activities.SearchItemsActivity"/>

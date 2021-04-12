@@ -40,4 +40,34 @@ public class CalorieInfo implements Serializable {
     public double getProtein() {
         return this.protein;
     }
+
+    public void setCarb(double carb) {
+        this.carb = carb;
+    }
+
+    public void setFiber(double fiber) {
+        this.fiber = fiber;
+    }
+
+    public void setFat(double fat) {
+        this.fat = fat;
+    }
+
+    public void setProtein(double protein) {
+        this.protein = protein;
+    }
+
+    public void addOtherCalorieInfo(CalorieInfo otherCalorieInfo) {
+        this.carb += otherCalorieInfo.getCarb();
+        this.fiber += otherCalorieInfo.getFiber();
+        this.fat += otherCalorieInfo.getFat();
+        this.protein += otherCalorieInfo.getProtein();
+    }
+
+    public void subtractOtherCalorieInfo(CalorieInfo otherCalorieInfo) {
+        this.carb -= otherCalorieInfo.getCarb();
+        this.fiber -= otherCalorieInfo.getFiber();
+        this.fat -= otherCalorieInfo.getFat();
+        this.protein -= otherCalorieInfo.getProtein();
+    }
 }
