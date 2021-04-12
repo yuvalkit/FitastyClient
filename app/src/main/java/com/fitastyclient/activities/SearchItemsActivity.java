@@ -138,9 +138,22 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             displayNoItemsFound();
             return;
         }
+        if (this.isAddMeal) {
+            addDishesToTable(dishes);
+            addIngredientsToTable(ingredients);
+        } else {
+            addIngredientsToTable(ingredients);
+            addDishesToTable(dishes);
+        }
+    }
+
+    private void addIngredientsToTable(List<ShortIngredient> ingredients) {
         for (ShortIngredient ingredient : ingredients) {
             addItemToTable(ingredient.getIngredientName(), true, ingredient.getIsLiquid());
         }
+    }
+
+    private void addDishesToTable(List<ShortDish> dishes) {
         for (ShortDish dish : dishes) {
             addItemToTable(dish.getDishName(), false, false);
         }
