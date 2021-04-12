@@ -64,7 +64,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     private TableLayout table;
     private CalorieInfo recommendedFacts;
     private NutritionFactsFilter factsFilter;
-    private boolean isAddMeal;
+    private boolean isForMeal;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -95,7 +95,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     private View.OnClickListener nutritionFactsFilterButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             showDialogFragment(new NutritionFactsFilterDialog(
-                    factsFilter, recommendedFacts, isAddMeal));
+                    factsFilter, recommendedFacts, isForMeal));
         }
     };
 
@@ -138,7 +138,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             displayNoItemsFound();
             return;
         }
-        if (this.isAddMeal) {
+        if (this.isForMeal) {
             addDishesToTable(dishes);
             addIngredientsToTable(ingredients);
         } else {
@@ -229,7 +229,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
 
     private void sendItemToParentActivity(String itemName, final boolean isIngredient,
                                            boolean isLiquid, double amount) {
-        String flag = (this.isAddMeal) ? Utils.MEAL_FLAG : Utils.DISH_FLAG;
+        String flag = (this.isForMeal) ? Utils.MEAL_FLAG : Utils.DISH_FLAG;
         flag += (isIngredient) ? Utils.ADD_INGREDIENT_TO_TABLE : Utils.ADD_DISH_TO_TABLE;
         Intent intent = new Intent(flag);
         if (isIngredient) {
@@ -307,9 +307,9 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         findViewById(R.id.nutritionFactsFilterButton)
                 .setOnClickListener(this.nutritionFactsFilterButtonClick);
         this.table = findViewById(R.id.searchedItemsTable);
-        this.isAddMeal = Objects.requireNonNull(getIntent().getExtras())
-                .getBoolean(Utils.IS_ADD_MEAL);
-        if (this.isAddMeal) {
+        this.isForMeal = Objects.requireNonNull(getIntent().getExtras())
+                .getBoolean(Utils.IS_FOR_MEAL);
+        if (this.isForMeal) {
             this.recommendedFacts = (CalorieInfo) getIntent()
                     .getSerializableExtra(Utils.CALORIE_INFO);
             assert recommendedFacts != null;

@@ -60,7 +60,7 @@ public class AddDishActivity extends ItemsTableActivity {
     private View.OnClickListener itemsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = getIntentWithBooleanFlag(AddDishActivity.this,
-                    SearchItemsActivity.class, Utils.IS_ADD_MEAL, false);
+                    SearchItemsActivity.class, Utils.IS_FOR_MEAL, false);
             startActivity(intent);
         }
     };

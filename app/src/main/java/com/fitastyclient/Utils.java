@@ -34,7 +34,7 @@ public class Utils {
     static public String ML = "ml";
 
     static public String IS_CREATE_NEW_ACCOUNT = "is_create_new_account";
-    static public String IS_ADD_MEAL = "is_add_meal";
+    static public String IS_FOR_MEAL = "is_for_meal";
     static public String MEAL_ACTIVITY_TYPE = "meal_activity_type";
 
     static public String factsPer100prefix = "Nutrition facts per 100";

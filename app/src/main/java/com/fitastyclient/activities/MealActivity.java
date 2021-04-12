@@ -70,7 +70,7 @@ public class MealActivity extends ItemsTableActivity {
     private View.OnClickListener itemsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = getIntentWithBooleanFlag(MealActivity.this,
-                    SearchItemsActivity.class, Utils.IS_ADD_MEAL, true);
+                    SearchItemsActivity.class, Utils.IS_FOR_MEAL, true);
             intent.putExtra(Utils.CALORIE_INFO, currentRecommendedCalorieInfo);
             startActivity(intent);
         }
