@@ -271,17 +271,17 @@ public class MealActivity extends ItemsTableActivity {
         setViewWithFact(R.id.mealProteinValue, protein);
     }
 
-    private void populateFieldsFromMeal(boolean invisibleDeleteButton) {
+    private void populateFieldsFromMeal(boolean disableDeleteButton) {
         this.currentMealCalorieInfo = this.meal.getCalorieInfoFromFields();
         this.calorieInfoBeforeEdit = this.meal.getCalorieInfoFromFields();
         updateMealCalorieInfo();
         List<ShortDish> dishes = this.meal.getDishes();
         List<ShortIngredient> ingredients = this.meal.getIngredients();
         for (ShortDish dish : dishes) {
-            addDishToContent(dish, false, invisibleDeleteButton);
+            addDishToContent(dish, false, disableDeleteButton);
         }
         for (ShortIngredient ingredient : ingredients) {
-            addIngredientToContent(ingredient, true, false, invisibleDeleteButton);
+            addIngredientToContent(ingredient, true, false, disableDeleteButton);
         }
     }
 
@@ -306,7 +306,7 @@ public class MealActivity extends ItemsTableActivity {
                 getIntent().getSerializableExtra(Utils.CALORIE_INFO);
         String title = Utils.EMPTY;
         String buttonText = addText;
-        boolean invisibleDeleteButton = false;
+        boolean disableDeleteButton = false;
         switch (this.activityType) {
             case ADD:
                 title = addMealTitle;
@@ -318,7 +318,7 @@ public class MealActivity extends ItemsTableActivity {
             case INFO:
                 title = mealInfoTitle;
                 makeButtonsInvisible();
-                invisibleDeleteButton = true;
+                disableDeleteButton = true;
                 break;
         }
         setViewText(R.id.mealActivityTitle, String.format(title, this.mealId));
@@ -329,7 +329,7 @@ public class MealActivity extends ItemsTableActivity {
             updateMealCalorieInfo();
         } else {
             this.meal = (Meal) getIntent().getSerializableExtra(Utils.MEAL);
-            populateFieldsFromMeal(invisibleDeleteButton);
+            populateFieldsFromMeal(disableDeleteButton);
         }
     }
 

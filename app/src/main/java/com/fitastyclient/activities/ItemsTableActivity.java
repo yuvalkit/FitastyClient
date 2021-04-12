@@ -81,20 +81,20 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
 
     protected void addIngredientToContent(ShortIngredient ingredient,
                                           boolean keepIsLiquid, boolean sendItemAdded,
-                                          boolean invisibleDeleteButton) {
+                                          boolean disableDeleteButton) {
         String ingredientName = ingredient.getIngredientName();
         this.ingredientsNameSet.add(ingredientName);
         if (keepIsLiquid) this.ingredients.add(ingredient);
         else this.ingredients.add(new ShortIngredient(ingredientName, ingredient.getAmount()));
-        addIngredientToTable(ingredient, invisibleDeleteButton);
+        addIngredientToTable(ingredient, disableDeleteButton);
         if (sendItemAdded) sendItemAddedToDishContent();
     }
 
     protected void addDishToContent(ShortDish dish, boolean sendItemAdded,
-                                    boolean invisibleDeleteButton) {
+                                    boolean disableDeleteButton) {
         this.dishesNameSet.add(dish.getDishName());
         this.dishes.add(dish);
-        addDishToTable(dish, invisibleDeleteButton);
+        addDishToTable(dish, disableDeleteButton);
         if (sendItemAdded) sendItemAddedToDishContent();
     }
 
@@ -106,17 +106,17 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
         sendBroadcast(new Intent(Utils.ITEM_ADDED_TO_DISH_CONTENT));
     }
 
-    protected void addDishToTable(ShortDish dish, boolean invisibleDeleteButton) {
+    protected void addDishToTable(ShortDish dish, boolean disableDeleteButton) {
         String name = dish.getDishName();
         double percent = dish.getPercent();
         String percentStr = Utils.doubleToPercent(percent);
         boolean toCenter = (name.length() <= maxNameSizeInRow);
         addItemToTable(dishType, name, percentStr, toCenter, false,
-                percent, invisibleDeleteButton);
+                percent, disableDeleteButton);
     }
 
     protected void addIngredientToTable(ShortIngredient ingredient,
-                                        boolean invisibleDeleteButton) {
+                                        boolean disableDeleteButton) {
         String name = ingredient.getIngredientName();
         double amount = ingredient.getAmount();
         String amountStr = Utils.cleanDoubleToString(amount);
@@ -126,12 +126,12 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
         amountStr += (gap + ingredient.getUnits());
         boolean toCenter = ((name.length() <= maxNameSizeInRow) && !isAmountTextLong);
         addItemToTable(ingredientType, name, amountStr, toCenter, true,
-                amount, invisibleDeleteButton);
+                amount, disableDeleteButton);
     }
 
     protected void addItemToTable(String type, String itemName, String amountStr,
                                   boolean toCenter, boolean isIngredient,
-                                  double amount, boolean invisibleDeleteButton) {
+                                  double amount, boolean disableDeleteButton) {
         TableRow row = new TableRow(this);
         int heightFactor = (itemName.length() / maxNameSizeInRow);
         addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight,
@@ -140,13 +140,13 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
                 bigWeight, namePadding, 0, toCenter, heightGaps, heightFactor, 0);
         addTextViewToRow(row, amountStr, R.color.darkBlue, amountWidth, itemRowHeight,
                 smallWeight, amountPadding, 0, toCenter, heightGaps, heightFactor, 0);
-        addDeleteButtonToRow(row, itemName, isIngredient, amount, invisibleDeleteButton);
+        addDeleteButtonToRow(row, itemName, isIngredient, amount, disableDeleteButton);
         this.table.addView(row);
     }
 
     protected void addDeleteButtonToRow(TableRow row, final String itemName,
                                         final boolean isIngredient, final double amount,
-                                        boolean invisibleDeleteButton) {
+                                        boolean disableDeleteButton) {
         ImageView view = getImageView(android.R.drawable.btn_dialog, deleteSize, 0, 0);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +154,7 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
                 deleteItemFromContent(view, itemName, isIngredient, amount);
             }
         });
-        if (invisibleDeleteButton) view.setVisibility(View.INVISIBLE);
+        if (disableDeleteButton) view.setVisibility(View.INVISIBLE);
         row.addView(view);
     }
 
