@@ -7,25 +7,23 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.data_holders.DietType;
-import com.fitastyclient.data_holders.NameExistObject;
-import com.fitastyclient.http.HttpManager;
+import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewEditAccountActivity extends MyAppCompatActivity {
+public class AccountActivity extends MyAppCompatActivity {
 
     static public String createNewAccount = "Create New Account";
     static public String editAccount = "Edit Account";
-    static public String createText = "Create";
-    static public String editText = "Edit";
     static public String usernameAlreadyTaken = "This username is already taken!";
     static public String usernameIsAvailable = "This username is available!";
     static public String thisIsYourUsername = "This is your current username.";
@@ -188,24 +186,28 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
             displayThisIsYourUsername();
             return;
         }
-        HttpManager.getRetrofitApi().isUsernameAvailable(username)
-                .enqueue(new Callback<NameExistObject>() {
+        Utils.getRetrofitApi().isUsernameAvailable(username)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<NameExistObject> call,
-                                           @NonNull Response<NameExistObject> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            assert response.body() != null;
-                            if (response.body().getNameExist()) {
-                                displayUsernameAlreadyTaken();
+                            NameExistObj nameExistObj = Utils.getResponseNameExistObj(response);
+                            if (nameExistObj != null) {
+                                if (nameExistObj.getNameExist()) {
+                                    displayUsernameAlreadyTaken();
+                                } else {
+                                    displayUsernameAvailable();
+                                }
                             } else {
-                                displayUsernameAvailable();
+                                displayUsernameCheckFailed();
                             }
                         } else {
                             displayUsernameCheckFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<NameExistObject> call,
+                    public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
                         displayUsernameCheckFailed();
                     }
@@ -252,21 +254,25 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
         }
     }
 
-    private Callback<NameExistObject> getCreateEditCallback(final Account account,
+    private Callback<ResponseBody> getCreateEditCallback(final Account account,
                                                          final String failedText) {
-        return new Callback<NameExistObject>() {
+        return new Callback<ResponseBody>() {
             @Override
-            public void onResponse(@NonNull Call<NameExistObject> call,
-                                   @NonNull Response<NameExistObject> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call,
+                                   @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    tryToCreateEditAccount(response.body().getNameExist(), account);
+                    NameExistObj nameExistObj = Utils.getResponseNameExistObj(response);
+                    if (nameExistObj != null) {
+                        tryToCreateEditAccount(nameExistObj.getNameExist(), account);
+                    } else {
+                        displayError(failedText);
+                    }
                 } else {
                     displayError(failedText);
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<NameExistObject> call,
+            public void onFailure(@NonNull Call<ResponseBody> call,
                                   @NonNull Throwable t) {
                 displayError(failedText);
             }
@@ -275,7 +281,7 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
 
     private void createNewAccount() {
         final Account account = getAccountFromFields();
-        HttpManager.getRetrofitApi().insertNewAccount(account)
+        Utils.getRetrofitApi().insertNewAccount(account)
                 .enqueue(getCreateEditCallback(account, accountCreationFailed));
     }
 
@@ -286,7 +292,7 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
             clearInformationText(R.id.usernameInformationText);
             return;
         }
-        HttpManager.getRetrofitApi().updateAccount(this.account.getUsername(), account)
+        Utils.getRetrofitApi().updateAccount(this.account.getUsername(), account)
                 .enqueue(getCreateEditCallback(account, accountEditFailed));
     }
 
@@ -339,7 +345,7 @@ public class NewEditAccountActivity extends MyAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_edit_account_layout);
+        setContentView(R.layout.account_layout);
         setComponents();
     }
 }

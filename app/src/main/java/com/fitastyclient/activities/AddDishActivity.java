@@ -3,24 +3,18 @@ package com.fitastyclient.activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+
 import androidx.annotation.NonNull;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.DishToInsert;
-import com.fitastyclient.data_holders.NameExistObject;
+import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
-import com.fitastyclient.http.HttpManager;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,13 +35,14 @@ public class AddDishActivity extends ItemsTableActivity {
                         intent.getSerializableExtra(Utils.INGREDIENT);
                 assert ingredient != null;
                 if (checkIfItemCanBeAdded(ingredientsNameSet, ingredient.getIngredientName())) {
-                    addIngredientToContent(ingredient, false, true, false);
+                    addIngredientToContent(ingredient, false, true, false,
+                            R.id.addDishButtonInfoText);
                 }
             } else if (action.equals(dishFlag)) {
                 ShortDish dish = (ShortDish) intent.getSerializableExtra(Utils.DISH);
                 assert dish != null;
                 if (checkIfItemCanBeAdded(dishesNameSet, dish.getDishName())) {
-                    addDishToContent(dish, true, false);
+                    addDishToContent(dish, true, false, R.id.addDishButtonInfoText);
                 }
             }
         }
@@ -105,25 +100,29 @@ public class AddDishActivity extends ItemsTableActivity {
     private void addDish() {
         String dishName = getTextFromView(R.id.dishNameInput);
         DishToInsert dishToInsert = new DishToInsert(dishName, this.ingredients, this.dishes);
-        HttpManager.getRetrofitApi().insertNewDish(dishToInsert)
-                .enqueue(new Callback<NameExistObject>() {
+        Utils.getRetrofitApi().insertNewDish(dishToInsert)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<NameExistObject> call,
-                                           @NonNull Response<NameExistObject> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            assert response.body() != null;
-                            if (response.body().getNameExist()) {
-                                displayNameAlreadyUsed();
+                            NameExistObj nameExistObj = Utils.getResponseNameExistObj(response);
+                            if (nameExistObj != null) {
+                                if (nameExistObj.getNameExist()) {
+                                    displayNameAlreadyUsed();
+                                } else {
+                                    Utils.displayToast(getApplicationContext(), dishAdded);
+                                    finish();
+                                }
                             } else {
-                                Utils.displayToast(getApplicationContext(), dishAdded);
-                                finish();
+                                displayAddFailed();
                             }
                         } else {
                             displayAddFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<NameExistObject> call,
+                    public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
                         displayAddFailed();
                     }

@@ -8,10 +8,8 @@ public class ShortIngredient implements Serializable {
 
     @SerializedName("ingredient_name")
     protected String ingredientName;
-
     @SerializedName("is_liquid")
     private Boolean isLiquid;
-
     @SerializedName("amount")
     private Double amount;
 
@@ -37,7 +35,7 @@ public class ShortIngredient implements Serializable {
         return this.isLiquid;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return this.amount;
     }
 
@@ -55,8 +53,16 @@ public class ShortIngredient implements Serializable {
             return false;
         }
         ShortIngredient other = (ShortIngredient) obj;
-        return this.ingredientName.equals(other.getIngredientName())
-                && this.isLiquid.equals(other.getIsLiquid())
-                && this.amount.equals(other.getAmount());
+        if ((this.isLiquid != null) && (other.getIsLiquid() != null)) {
+            if (!this.isLiquid.equals(other.getIsLiquid())) {
+                return false;
+            }
+        }
+        if ((this.amount != null) && (other.getAmount() != null)) {
+            if (!this.amount.equals(other.getAmount())) {
+                return false;
+            }
+        }
+        return this.ingredientName.equals(other.getIngredientName());
     }
 }

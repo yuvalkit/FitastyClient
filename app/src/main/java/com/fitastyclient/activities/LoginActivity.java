@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import org.json.JSONObject;
@@ -23,18 +21,18 @@ public class LoginActivity extends MyAppCompatActivity {
 
     private View.OnClickListener loginButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            EditText usernameView = findViewById(R.id.loginLayoutUsernameInput);
-            EditText passwordView = findViewById(R.id.loginLayoutPasswordInput);
-            String username = usernameView.getText().toString();
-            String password = passwordView.getText().toString();
+            clearLoginInfoText();
+            String username = getTextFromView(R.id.loginLayoutUsernameInput);
+            String password = getTextFromView(R.id.loginLayoutPasswordInput);
             tryToLogin(username, password);
         }
     };
 
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
+            clearLoginInfoText();
             Intent intent = getIntentWithBooleanFlag(LoginActivity.this,
-                    NewEditAccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, true);
+                    AccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, true);
             startActivity(intent);
         }
     };
@@ -48,7 +46,7 @@ public class LoginActivity extends MyAppCompatActivity {
             setLoginInformationText(mustEnterFields);
             return;
         }
-        HttpManager.getRetrofitApi().isCorrectUsernameAndPassword(username, password)
+        Utils.getRetrofitApi().isCorrectUsernameAndPassword(username, password)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(@NonNull Call<ResponseBody> call,
@@ -59,7 +57,6 @@ public class LoginActivity extends MyAppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 boolean found = jsonObject.getBoolean(Utils.FOUND);
                                 if (found) {
-                                    setLoginInformationText(Utils.EMPTY);
                                     startMainMenuActivity(username);
                                 } else {
                                     setLoginInformationText(wrongFields);
@@ -79,6 +76,10 @@ public class LoginActivity extends MyAppCompatActivity {
                 });
     }
 
+    private void clearLoginInfoText() {
+        clearInformationText(R.id.loginInformationText);
+    }
+
     private void setLoginInformationText(String text) {
         TextView view = findViewById(R.id.loginInformationText);
         view.setTextColor(getResources().getColor(R.color.red));
@@ -86,10 +87,9 @@ public class LoginActivity extends MyAppCompatActivity {
     }
 
     private void clearAllTexts() {
-        String empty = "";
-        ((TextView) findViewById(R.id.loginLayoutUsernameInput)).setText(empty);
-        ((TextView) findViewById(R.id.loginLayoutPasswordInput)).setText(empty);
-        ((TextView) findViewById(R.id.loginInformationText)).setText(empty);
+        clearInformationText(R.id.loginLayoutUsernameInput);
+        clearInformationText(R.id.loginLayoutPasswordInput);
+        clearInformationText(R.id.loginInformationText);
     }
 
     private void setComponents() {

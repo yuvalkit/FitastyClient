@@ -7,6 +7,18 @@
     android:background="@color/backgroundColor"
     android:focusableInTouchMode="false">
 
+    <TextView
+        android:id="@+id/dietDiaryAmountExplanation"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/amount_max_explanation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchedItemsTableScrollView"
+        app:layout_constraintVertical_bias="0.0" />
+
     <CheckBox
         android:id="@+id/dishesCheckBox"
         android:layout_width="wrap_content"
@@ -148,14 +160,14 @@
         android:id="@+id/searchedItemsTableScrollView"
         android:layout_width="390dp"
         android:layout_height="280dp"
-        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:background="@color/white"
         android:nestedScrollingEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchItemsInfoText"
+        app:layout_constraintTop_toBottomOf="@+id/searchItemsTitleTable"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="NestedScrolling">
 
@@ -224,5 +236,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/glutenFreeCheckBox"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TableLayout
+        android:id="@+id/searchItemsTitleTable"
+        android:layout_width="390dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/veryLightBlue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchItemsInfoText"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp">
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="83dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:paddingStart="5dp"
+                android:text="@string/type"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/name"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/amount"
+                android:textColor="@color/black" />
+
+        </TableRow>
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

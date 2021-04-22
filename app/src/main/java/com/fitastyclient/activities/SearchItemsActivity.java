@@ -7,31 +7,27 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.data_holders.CalorieInfo;
-import com.fitastyclient.data_holders.Dish;
-import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.data_holders.NutritionFactsFilter;
 import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
 import com.fitastyclient.data_holders.SearchBody;
 import com.fitastyclient.data_holders.SearchResult;
-import com.fitastyclient.dialogs.DishInfoDialog;
 import com.fitastyclient.dialogs.NutritionFactsFilterDialog;
-import com.fitastyclient.http.HttpManager;
 import java.util.List;
 import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,23 +39,23 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     static public int itemRowHeight = 130;
 
     static public int editTextTextSize = 15;
+    static public int editTextWidth = 320;
     static public int viewWeight = 1;
     static public int viewLeftPadding = 20;
 
     static public int maxNameSizeInRow = 22;
     static public int heightGaps = 60;
-
-    static public int infoIconSize = 90;
-    static public int infoIconLeftPadding = 10;
     static public int addIconSize = 120;
+
+    static public int itemsTableShortHeight = 750;
 
     static public String mustChooseWhatToSearch = "You must choose what to search for.";
     static public String searchFailed = "Search failed, please try again.";
     static public String mustEnterAmount = "You must enter an amount.";
     static public String itemCanBeAddedOnce = "Each item can be added only once.";
-    static public String itemAddedToDishContent = "Item added to dish content.";
+    static public String itemAddedToDishContent = "Item added to dish content.\nSearch refreshed.";
     static public String noItemsFound = "No items found.";
-    static public String amountStringFormat = "Amount (%s)";
+    static public String amountStringFormat = "%s";
 
     private TableLayout table;
     private CalorieInfo recommendedFacts;
@@ -74,8 +70,15 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             if (action.equals(Utils.ITEM_CAN_BE_ADDED_ONCE)) {
                 displaySearchInfoError(itemCanBeAddedOnce);
             } else if (action.equals(Utils.ITEM_ADDED_TO_DISH_CONTENT)) {
-                setViewTextAndColor(R.id.searchItemsInfoText,
-                        itemAddedToDishContent, R.color.green);
+                Utils.displayToast(getApplicationContext(), itemAddedToDishContent);
+//                setViewTextAndColor(R.id.searchItemsInfoText,
+//                        itemAddedToDishContent, R.color.green);
+                search();
+            } else if (action.equals(Utils.UPDATE_FACTS_FILTER_BY_ITEM)) {
+                CalorieInfo itemCalorieInfo = (CalorieInfo)
+                        intent.getSerializableExtra(Utils.CALORIE_INFO);
+                assert itemCalorieInfo != null;
+                factsFilter.subtractMaxValuesByCalorieInfo(itemCalorieInfo);
             } else if (action.equals(Utils.UPDATE_FACTS_FILTER)) {
                 factsFilter = (NutritionFactsFilter)
                         intent.getSerializableExtra(Utils.FACTS_FILTER);
@@ -94,8 +97,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
 
     private View.OnClickListener nutritionFactsFilterButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            showDialogFragment(new NutritionFactsFilterDialog(
-                    factsFilter, recommendedFacts, isForMeal));
+            showDialogFragment(new NutritionFactsFilterDialog(factsFilter, recommendedFacts));
         }
     };
 
@@ -167,64 +169,30 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             return;
         }
         final SearchBody searchBody = getSearchBodyFromFields();
-        HttpManager.getRetrofitApiWithNulls().getFoods(
+        Utils.getRetrofitApiWithNulls().getFoods(
                 includeDishes, includeIngredients, searchBody)
-                .enqueue(new Callback<SearchResult>() {
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<SearchResult> call,
-                                           @NonNull Response<SearchResult> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            SearchResult searchResult = response.body();
-                            assert searchResult != null;
-                            addSearchResultToTable(searchResult);
+                            SearchResult searchResult = Utils.getResponseObject(
+                                    response, SearchResult.class);
+                            if (searchResult != null) {
+                                addSearchResultToTable(searchResult);
+                            } else {
+                                displaySearchFailed();
+                            }
                         } else {
                             displaySearchFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<SearchResult> call,
+                    public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
                         displaySearchFailed();
                     }
                 });
-    }
-
-    private <T> void sendGetItemInfoRequest(Call<T> call, final boolean isIngredient) {
-        call.enqueue(new Callback<T>() {
-                    @Override
-                    public void onResponse(@NonNull Call<T> call,
-                                           @NonNull Response<T> response) {
-                        if (response.isSuccessful()) {
-                            clearSearchInfoText();
-                            T item = response.body();
-                            assert item != null;
-                            if (isIngredient) displayIngredientInfoDialog((Ingredient) item);
-                            else displayDishInfoDialog((Dish) item);
-                        } else {
-                            displayItemInfoFailed();
-                        }
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<T> call,
-                                          @NonNull Throwable t) {
-                        displayItemInfoFailed();
-                    }
-                });
-    }
-
-    private void getIngredientInfo(String ingredientName) {
-        sendGetItemInfoRequest(HttpManager.getRetrofitApi()
-                .getIngredientInfo(ingredientName), true);
-    }
-
-    private void getDishInfo(String dishName) {
-        sendGetItemInfoRequest(HttpManager.getRetrofitApi()
-                .getDishInfo(dishName), false);
-    }
-
-    private void getItemInfo(String itemName, boolean isIngredient) {
-        if (isIngredient) getIngredientInfo(itemName);
-        else getDishInfo(itemName);
     }
 
     private void sendItemToParentActivity(String itemName, final boolean isIngredient,
@@ -260,25 +228,13 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         row.addView(view);
     }
 
-    private void addInfoButtonToRow(TableRow row, final String itemName,
-                                    final boolean isIngredient) {
-        ImageView view = getImageView(android.R.drawable.ic_dialog_info,
-                infoIconSize, R.color.blue, infoIconLeftPadding);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getItemInfo(itemName, isIngredient);
-            }
-        });
-        row.addView(view);
-    }
-
     private EditText getAmountInputBar(boolean isIngredient, boolean isLiquid) {
         EditText editText = new EditText(this);
         String units = (isIngredient) ? ((isLiquid) ? Utils.ML : Utils.GRAM) : Utils.PERCENT;
         String amountText = String.format(amountStringFormat, units);
         editText.setHint(amountText);
         editText.setTextSize(editTextTextSize);
+        editText.setWidth(editTextWidth);
         int inputType = InputType.TYPE_CLASS_NUMBER;
         if (isIngredient) inputType |= InputType.TYPE_NUMBER_FLAG_DECIMAL;
         editText.setInputType(inputType);
@@ -290,15 +246,20 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         TableRow row = new TableRow(this);
         String type = (isIngredient) ? ingredientType : dishType;
         int heightFactor = (itemName.length() / maxNameSizeInRow);
-        addInfoButtonToRow(row, itemName, isIngredient);
+        addInfoButtonToRow(row, itemName, isIngredient, R.id.searchItemsInfoText);
         addTextViewToRow(row, type, R.color.lightBlue, typeWidth, itemRowHeight, viewWeight,
-                viewLeftPadding, 0, false, heightGaps, heightFactor, 0);
+                viewLeftPadding, false, heightGaps, heightFactor, 0);
         addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight, viewWeight,
-                viewLeftPadding, 0, false, heightGaps, heightFactor, 0);
+                viewLeftPadding, false, heightGaps, heightFactor, 0);
         EditText editText = getAmountInputBar(isIngredient, isLiquid);
         row.addView(editText);
         addAddButtonToRow(row, itemName, isIngredient, isLiquid, editText);
         this.table.addView(row);
+    }
+
+    private void decreaseItemsTableHeight() {
+        ScrollView scrollView = findViewById(R.id.searchedItemsTableScrollView);
+        scrollView.getLayoutParams().height = itemsTableShortHeight;
     }
 
     private void setComponents() {
@@ -314,12 +275,17 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                     .getSerializableExtra(Utils.CALORIE_INFO);
             assert recommendedFacts != null;
             this.factsFilter = new NutritionFactsFilter(this.recommendedFacts);
+            decreaseItemsTableHeight();
         } else {
+            makeViewGone(R.id.nutritionFactsFilterButton);
+            makeViewGone(R.id.dietDiaryAmountExplanation);
             this.factsFilter = new NutritionFactsFilter();
         }
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ITEM_CAN_BE_ADDED_ONCE));
         registerReceiver(this.broadcastReceiver,
                 new IntentFilter(Utils.ITEM_ADDED_TO_DISH_CONTENT));
+        registerReceiver(this.broadcastReceiver
+                , new IntentFilter(Utils.UPDATE_FACTS_FILTER_BY_ITEM));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.UPDATE_FACTS_FILTER));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ITEM_ADD_FAILED));
     }

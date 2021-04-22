@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.fitastyclient.data_holders.Account;
-import com.fitastyclient.http.HttpManager;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class SettingsActivity extends MyAppCompatActivity {
 
     private View.OnClickListener deleteAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            displayDeletePopup();
+            displayDeleteAccountPopup();
         }
     };
 
@@ -52,7 +51,7 @@ public class SettingsActivity extends MyAppCompatActivity {
     }
 
     private void tryToDeleteAccount() {
-        HttpManager.getRetrofitApi().deleteAccount(username)
+        Utils.getRetrofitApi().deleteAccount(username)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(@NonNull Call<ResponseBody> call,
@@ -73,48 +72,43 @@ public class SettingsActivity extends MyAppCompatActivity {
                 });
     }
 
-    private void displayDeletePopup() {
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
-                .setTitle(deleteTitle)
-                .setMessage(areYouSureText)
-                .setPositiveButton(Utils.YES, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        tryToDeleteAccount();
-                    }
-                })
-                .setNegativeButton(Utils.NO, null)
-                .setIcon(android.R.drawable.stat_notify_error)
-                .show();
-        ((ImageView) Objects.requireNonNull(dialog.findViewById(android.R.id.icon)))
-                .setColorFilter(getColorById(R.color.red),
-                        android.graphics.PorterDuff.Mode.SRC_IN);
+    private void displayDeleteAccountPopup() {
+        displayDeletePopup(deleteTitle, areYouSureText, R.color.red,
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                tryToDeleteAccount();
+            }
+        });
     }
 
     private void startNewAccountActivity(Account account) {
         Intent intent = getIntentWithBooleanFlag(SettingsActivity.this,
-                NewEditAccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, false);
+                AccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, false);
         intent.putExtra(Utils.ACCOUNT, account);
         startActivity(intent);
     }
 
     private void tryToEditAccount() {
-        HttpManager.getRetrofitApi().getAccountInformation(this.username)
-                .enqueue(new Callback<Account>() {
+        Utils.getRetrofitApi().getAccountInformation(this.username)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<Account> call,
-                                           @NonNull Response<Account> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            Account account = response.body();
-                            assert account != null;
-                            account.setUsername(username);
-                            startNewAccountActivity(account);
-                            clearEditAccountInformation();
+                            Account account = Utils.getResponseObject(response, Account.class);
+                            if (account != null) {
+                                account.setUsername(username);
+                                startNewAccountActivity(account);
+                                clearEditAccountInformation();
+                            } else {
+                                displayEditFailed();
+                            }
                         } else {
                             displayEditFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<Account> call,
+                    public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
                         displayEditFailed();
                     }

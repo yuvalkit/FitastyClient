@@ -67,4 +67,11 @@ public class NutritionFactsFilter implements Serializable {
         return this.minProtein;
     }
 
+    public void subtractMaxValuesByCalorieInfo(CalorieInfo calorieInfo) {
+        this.maxFat -= calorieInfo.getFat();
+        this.maxCarb -= calorieInfo.getCarb();
+        this.maxFiber -= calorieInfo.getFiber();
+        this.maxProtein -= calorieInfo.getProtein();
+    }
+
 }

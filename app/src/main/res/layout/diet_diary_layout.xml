@@ -11,14 +11,36 @@
         android:background="@color/backgroundColor"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/dietDiaryActivityCancelIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <TextView
+            android:id="@+id/createEditDietDiaryInfoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/dietDiaryActivityButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calorieInfoTable" />
+
         <Button
-            android:id="@+id/createNewDietDiaryButton"
+            android:id="@+id/dietDiaryActivityButton"
             android:layout_width="80dp"
             android:layout_height="39dp"
             android:layout_marginTop="870dp"
             android:layout_marginBottom="60dp"
             android:background="@color/lightBlue"
-            android:text="@string/create"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +72,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mealsTableScrollView"
+            app:layout_constraintTop_toBottomOf="@+id/dietDiaryMealsTableScrollView"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
@@ -87,11 +109,9 @@
             android:id="@+id/dietDiaryNameInfoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dietDiaryNameInput"
             app:layout_constraintVertical_bias="0.0" />
@@ -130,25 +150,10 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/newEditDietDiaryCancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/newEditDietDiaryTitle"
+            android:id="@+id/dietDiaryActivityTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
-            android:text="@string/create_new_diet_diary"
             android:textColor="@color/darkBlue"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -158,7 +163,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <ScrollView
-            android:id="@+id/mealsTableScrollView"
+            android:id="@+id/dietDiaryMealsTableScrollView"
             android:layout_width="350dp"
             android:layout_height="220dp"
             android:layout_marginStart="30dp"
@@ -175,7 +180,7 @@
             tools:ignore="NestedScrolling">
 
             <TableLayout
-                android:id="@+id/mealsTable"
+                android:id="@+id/dietDiaryMealsTable"
                 android:layout_width="350dp"
                 android:layout_height="220dp"
                 android:divider="?android:listDivider"
@@ -190,7 +195,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="15dp"
             android:background="@color/white"
-            app:layout_constraintBottom_toTopOf="@+id/createNewDietDiaryButton"
+            app:layout_constraintBottom_toTopOf="@+id/dietDiaryActivityButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

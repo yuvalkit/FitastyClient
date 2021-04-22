@@ -21,7 +21,7 @@ public class IngredientInfoDialog extends MyDialogFragment {
         boolean isGlutenFree = this.ingredient.getIsGlutenFree();
         boolean isLactoseFree = this.ingredient.getIsLactoseFree();
         String units = this.ingredient.getUnits();
-        String nutritionFactsTitle = Utils.factsPer100prefix + units + Utils.COLON;
+        String nutritionFactsTitle = Utils.FACTS_PER_100_PREFIX + units + Utils.COLON;
         setViewText(R.id.ingredientInfoNameText, name);
         setViewText(R.id.ingredientInfoServingText, servingStr + units);
         setViewText(R.id.ingredientInfoNutritionFactsTitle, nutritionFactsTitle);

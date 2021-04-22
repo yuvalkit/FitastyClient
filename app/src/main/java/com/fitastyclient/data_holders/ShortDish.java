@@ -7,7 +7,6 @@ public class ShortDish implements Serializable {
 
     @SerializedName("dish_name")
     private String dishName;
-
     @SerializedName("percent")
     private Double percent;
 

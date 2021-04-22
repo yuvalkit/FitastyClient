@@ -3,11 +3,14 @@ package com.fitastyclient.activities;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.NonNull;
-import com.fitastyclient.data_holders.NameExistObject;
-import com.fitastyclient.http.HttpManager;
+import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
+
+import java.util.jar.Attributes;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +47,7 @@ public class AddIngredientActivity extends MyAppCompatActivity {
 
     private void setUnitsTexts(String units) {
         setViewText(R.id.servingSizeUnits, units);
-        setViewText(R.id.factsPer100Text, Utils.factsPer100prefix + units + Utils.COLON);
+        setViewText(R.id.factsPer100Text, Utils.FACTS_PER_100_PREFIX + units + Utils.COLON);
     }
 
     private void displayNameAlreadyUsed() {
@@ -55,10 +58,9 @@ public class AddIngredientActivity extends MyAppCompatActivity {
         displayError(R.id.factsInformationText, text);
     }
 
-    private void displayError(String text) {
-        displayError(R.id.addIngredientButtonInfoText, text);
+    private void displayAdditionFailed() {
+        displayError(R.id.addIngredientButtonInfoText, ingredientAdditionFailed);
     }
-
 
     private boolean isFactEmpty(String fact) {
         return fact.isEmpty() || fact.equals(Utils.DOT);
@@ -115,27 +117,31 @@ public class AddIngredientActivity extends MyAppCompatActivity {
 
     private void addIngredient() {
         Ingredient ingredient = getIngredientFromFields();
-        HttpManager.getRetrofitApi().insertNewIngredient(ingredient)
-                .enqueue(new Callback<NameExistObject>() {
+        Utils.getRetrofitApi().insertNewIngredient(ingredient)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<NameExistObject> call,
-                                           @NonNull Response<NameExistObject> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            assert response.body() != null;
-                            if (response.body().getNameExist()) {
-                                displayNameAlreadyUsed();
+                            NameExistObj nameExistObj = Utils.getResponseNameExistObj(response);
+                            if (nameExistObj != null) {
+                                if (nameExistObj.getNameExist()) {
+                                    displayNameAlreadyUsed();
+                                } else {
+                                    Utils.displayToast(getApplicationContext(), ingredientAdded);
+                                    finish();
+                                }
                             } else {
-                                Utils.displayToast(getApplicationContext(), ingredientAdded);
-                                finish();
+                                displayAdditionFailed();
                             }
                         } else {
-                            displayError(ingredientAdditionFailed);
+                            displayAdditionFailed();
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<NameExistObject> call,
+                    public void onFailure(@NonNull Call<ResponseBody> call,
                                           @NonNull Throwable t) {
-                        displayError(ingredientAdditionFailed);
+                        displayAdditionFailed();
                     }
                 });
     }

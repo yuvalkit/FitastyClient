@@ -121,22 +121,21 @@
     <ScrollView
         android:id="@+id/itemsTableScrollView"
         android:layout_width="375dp"
-        android:layout_height="257dp"
-        android:layout_marginTop="15dp"
+        android:layout_height="227dp"
         android:layout_weight="1"
         android:background="@color/white"
         android:nestedScrollingEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dishContentText"
+        app:layout_constraintTop_toBottomOf="@+id/itemsTableTitleTable"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="NestedScrolling">
 
         <TableLayout
             android:id="@+id/itemsTable"
             android:layout_width="375dp"
-            android:layout_height="257dp"
+            android:layout_height="227dp"
             android:divider="?android:listDivider"
             android:showDividers="middle" />
 
@@ -155,5 +154,55 @@
         app:layout_constraintTop_toBottomOf="@+id/dishNameInformationText"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <TableLayout
+        android:id="@+id/itemsTableTitleTable"
+        android:layout_width="375dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/veryLightBlue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dishContentText"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:paddingStart="5dp"
+                android:text="@string/type"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/name"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/amount"
+                android:textColor="@color/black" />
+
+        </TableRow>
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

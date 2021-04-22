@@ -77,15 +77,6 @@ public class Meal implements Serializable {
         return Utils.getCalories(this.fat, this.carb, this.protein);
     }
 
-    public void replaceByMeal(Meal meal) {
-        this.dishes = meal.getDishes();
-        this.ingredients = meal.getIngredients();
-        this.fat = meal.getFat();
-        this.carb = meal.getCarb();
-        this.fiber = meal.getFiber();
-        this.protein = meal.getProtein();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -95,13 +86,29 @@ public class Meal implements Serializable {
             return false;
         }
         Meal other = (Meal) obj;
+        if ((this.fat != null) && (other.getFat() != null)) {
+            if (!this.fat.equals(other.getFat())) {
+                return false;
+            }
+        }
+        if ((this.carb != null) && (other.getCarb() != null)) {
+            if (!this.carb.equals(other.getCarb())) {
+                return false;
+            }
+        }
+        if ((this.fiber != null) && (other.getFiber() != null)) {
+            if (!this.fiber.equals(other.getFiber())) {
+                return false;
+            }
+        }
+        if ((this.protein != null) && (other.getProtein() != null)) {
+            if (!this.protein.equals(other.getProtein())) {
+                return false;
+            }
+        }
         return this.mealId == other.getMealId()
                 && this.dishes.equals(other.getDishes())
-                && this.ingredients.equals(other.getIngredients())
-                && this.fat.equals(other.getFat())
-                && this.carb.equals(other.getCarb())
-                && this.fiber.equals(other.getFiber())
-                && this.protein.equals(other.getProtein());
+                && this.ingredients.equals(other.getIngredients());
     }
 
 }

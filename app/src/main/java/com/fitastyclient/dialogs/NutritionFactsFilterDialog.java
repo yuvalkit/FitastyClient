@@ -13,8 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-import com.fitastyclient.activities.LoginActivity;
-import com.fitastyclient.activities.NewEditAccountActivity;
 import com.fitastyclient.data_holders.CalorieInfo;
 import com.fitastyclient.data_holders.NutritionFactsFilter;
 import java.util.Objects;
@@ -25,7 +23,6 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
 
     private NutritionFactsFilter factsFilter;
     private CalorieInfo recommendedFacts;
-    private boolean isAddMeal;
     private EditText maxFatEditText;
     private EditText maxCarbEditText;
     private EditText maxFiberEditText;
@@ -74,13 +71,11 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
                 setRecommendedMaxValuesText(Utils.EMPTY);
                 removeTextChangedListeners();
             }};
-        if (this.isAddMeal) {
-            setResetButton();
-            if (isFactsFilerHasRecommendedFacts()) {
-                setRecommendedMaxValuesText(recommendedMaxValues);
-            }
-            setTextChangedListeners();
+        setResetButton();
+        if (isFactsFilerHasRecommendedFacts()) {
+            setRecommendedMaxValuesText(recommendedMaxValues);
         }
+        setTextChangedListeners();
     }
 
     private boolean isFactsFilerHasRecommendedFacts() {
@@ -160,10 +155,9 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
     }
 
     public NutritionFactsFilterDialog(NutritionFactsFilter factsFilter,
-                                      CalorieInfo recommendedFacts, boolean isAddMeal) {
+                                      CalorieInfo recommendedFacts) {
         this.factsFilter = factsFilter;
         this.recommendedFacts = recommendedFacts;
-        this.isAddMeal = isAddMeal;
     }
 
     @NonNull
