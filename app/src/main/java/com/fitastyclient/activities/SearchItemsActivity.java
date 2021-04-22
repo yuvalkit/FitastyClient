@@ -53,7 +53,8 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     static public String searchFailed = "Search failed, please try again.";
     static public String mustEnterAmount = "You must enter an amount.";
     static public String itemCanBeAddedOnce = "Each item can be added only once.";
-    static public String itemAddedToDishContent = "Item added to dish content.\nSearch refreshed.";
+    static public String itemAddedToContentFormat = "Item added to %s content.";
+    static public String searchRefreshedText = "\nSearch refreshed.";
     static public String noItemsFound = "No items found.";
     static public String amountStringFormat = "%s";
 
@@ -70,10 +71,8 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             if (action.equals(Utils.ITEM_CAN_BE_ADDED_ONCE)) {
                 displaySearchInfoError(itemCanBeAddedOnce);
             } else if (action.equals(Utils.ITEM_ADDED_TO_DISH_CONTENT)) {
-                Utils.displayToast(getApplicationContext(), itemAddedToDishContent);
-//                setViewTextAndColor(R.id.searchItemsInfoText,
-//                        itemAddedToDishContent, R.color.green);
-                search();
+                Utils.displayToast(getApplicationContext(), getItemAddedToContentText());
+                if (isForMeal) search();
             } else if (action.equals(Utils.UPDATE_FACTS_FILTER_BY_ITEM)) {
                 CalorieInfo itemCalorieInfo = (CalorieInfo)
                         intent.getSerializableExtra(Utils.CALORIE_INFO);
@@ -159,6 +158,13 @@ public class SearchItemsActivity extends MyAppCompatActivity {
         for (ShortDish dish : dishes) {
             addItemToTable(dish.getDishName(), false, false);
         }
+    }
+
+    private String getItemAddedToContentText() {
+        String contentStr = (this.isForMeal) ? Utils.MEAL : Utils.DISH;
+        String itemAddedText = String.format(itemAddedToContentFormat, contentStr);
+        if (this.isForMeal) itemAddedText += searchRefreshedText;
+        return itemAddedText;
     }
 
     private void search() {
