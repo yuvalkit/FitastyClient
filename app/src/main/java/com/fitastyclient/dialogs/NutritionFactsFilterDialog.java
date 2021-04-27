@@ -3,6 +3,7 @@ package com.fitastyclient.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,18 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
     private EditText fiberEditText;
     private EditText proteinEditText;
     private TextWatcher textWatcher;
+    private boolean isInfoActive;
+
+    private View.OnClickListener infoButtonClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (isInfoActive) {
+                changeInfoTextsVisibility(View.GONE);
+            } else {
+                changeInfoTextsVisibility(View.VISIBLE);
+            }
+            isInfoActive = !isInfoActive;
+        }
+    };
 
     private View.OnClickListener resetButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -36,6 +49,13 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
             setTextChangedListeners();
         }
     };
+
+    private void changeInfoTextsVisibility(int visibility) {
+        changeViewVisibility(R.id.factFieldsInfoText, visibility);
+        changeViewVisibility(R.id.filterIsPerServingText, visibility);
+        changeViewVisibility(R.id.minMaxAmountInfoText, visibility);
+        changeViewVisibility(R.id.leaveEmptyForNoFilterText, visibility);
+    }
 
     private void setViewDoubleWithNulls(int viewId, Double value) {
         if (value != null) {
@@ -65,6 +85,7 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
 
     private void populateFields() {
         setFactsFields(this.factsFilter, true);
+        this.isInfoActive = false;
         this.fatEditText = this.view.findViewById(R.id.nutritionFactsFilterFatValue);
         this.carbEditText = this.view.findViewById(R.id.nutritionFactsFilterCarbValue);
         this.fiberEditText = this.view.findViewById(R.id.nutritionFactsFilterFiberValue);
@@ -76,6 +97,9 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
                 setRecommendedValuesText(Utils.EMPTY);
                 removeTextChangedListeners();
             }};
+        this.view.findViewById(R.id.nutritionFactsFilterInfoButton)
+                .setOnClickListener(this.infoButtonClick);
+        changeInfoTextsVisibility(View.GONE);
         this.view.findViewById(R.id.resetToRecommendedButton)
                 .setOnClickListener(this.resetButtonClick);
         if (isFactsFilterHasRecommendedFacts()) {

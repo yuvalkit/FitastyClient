@@ -21,6 +21,10 @@ public abstract class MyDialogFragment extends DialogFragment {
         setViewText(viewId, Utils.EMPTY);
     }
 
+    protected void changeViewVisibility(int viewId, int visibility) {
+        this.view.findViewById(viewId).setVisibility(visibility);
+    }
+
     protected void enableCheckBox(int viewId) {
         ((CheckBox) this.view.findViewById(viewId)).toggle();
     }

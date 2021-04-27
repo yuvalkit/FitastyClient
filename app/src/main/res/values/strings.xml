@@ -99,7 +99,7 @@
     <!--  nutrition_facts_filter_dialog strings  -->
     <string name="min">Min</string>
     <string name="max">Max</string>
-    <string name="fact_fields_explanation">The items search searches according to these facts values.</string>
+    <string name="fact_fields_explanation">The items search is according to these facts values.</string>
     <string name="filter_is_per_serving">For ingredients, the filter is per serving size.</string>
     <string name="amount_fields_explanation">The min-max amount fields set the amount percent range for the items search.</string>
     <string name="leave_empty_for_no_filter">Leave a field value empty for no filter on that field.</string>
