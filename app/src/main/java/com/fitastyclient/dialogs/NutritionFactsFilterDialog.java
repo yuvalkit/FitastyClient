@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,20 +18,21 @@ import java.util.Objects;
 
 public class NutritionFactsFilterDialog extends MyDialogFragment {
 
-    public static String recommendedMaxValues = "These max values are recommended for you.";
+    public static String recommendedFactValues = "These facts values are recommended for you.";
 
     private NutritionFactsFilter factsFilter;
     private CalorieInfo recommendedFacts;
-    private EditText maxFatEditText;
-    private EditText maxCarbEditText;
-    private EditText maxFiberEditText;
-    private EditText maxProteinEditText;
+    private EditText fatEditText;
+    private EditText carbEditText;
+    private EditText fiberEditText;
+    private EditText proteinEditText;
     private TextWatcher textWatcher;
 
     private View.OnClickListener resetButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            setFactsFields(new NutritionFactsFilter(recommendedFacts), false);
-            setRecommendedMaxValuesText(recommendedMaxValues);
+            setFactsFields(new NutritionFactsFilter(recommendedFacts,
+                    factsFilter.getMinPercent(), factsFilter.getMaxPercent()), false);
+            setRecommendedValuesText(recommendedFactValues);
             setTextChangedListeners();
         }
     };
@@ -45,71 +45,71 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
         }
     }
 
-    private void setFactsFields(NutritionFactsFilter filter, boolean toSetMinValues) {
-        setViewDoubleWithNulls(R.id.fatMaxValue, filter.getMaxFat());
-        setViewDoubleWithNulls(R.id.carbMaxValue, filter.getMaxCarb());
-        setViewDoubleWithNulls(R.id.fiberMaxValue, filter.getMaxFiber());
-        setViewDoubleWithNulls(R.id.proteinMaxValue, filter.getMaxProtein());
-        if (toSetMinValues) {
-            setViewDoubleWithNulls(R.id.fatMinValue, filter.getMinFat());
-            setViewDoubleWithNulls(R.id.carbMinValue, filter.getMinCarb());
-            setViewDoubleWithNulls(R.id.fiberMinValue, filter.getMinFiber());
-            setViewDoubleWithNulls(R.id.proteinMinValue, filter.getMinProtein());
+    private void setViewPercentWithNulls(int viewId, Double percent) {
+        if (percent != null) setViewDoubleWithNulls(viewId, percent * Utils.PERCENT_SCALE);
+        else setViewDoubleWithNulls(viewId, null);
+    }
+
+    private void setFactsFields(NutritionFactsFilter filter, boolean setAmountFields) {
+        setViewDoubleWithNulls(R.id.nutritionFactsFilterFatValue, filter.getFat());
+        setViewDoubleWithNulls(R.id.nutritionFactsFilterCarbValue, filter.getCarb());
+        setViewDoubleWithNulls(R.id.nutritionFactsFilterFiberValue, filter.getFiber());
+        setViewDoubleWithNulls(R.id.nutritionFactsFilterProteinValue, filter.getProtein());
+        if (setAmountFields) {
+            setViewPercentWithNulls(R.id.nutritionFactsFilterMinAmountValue,
+                    filter.getMinPercent());
+            setViewPercentWithNulls(R.id.nutritionFactsFilterMaxAmountValue,
+                    filter.getMaxPercent());
         }
     }
 
     private void populateFields() {
         setFactsFields(this.factsFilter, true);
-        this.maxFatEditText = this.view.findViewById(R.id.fatMaxValue);
-        this.maxCarbEditText = this.view.findViewById(R.id.carbMaxValue);
-        this.maxFiberEditText = this.view.findViewById(R.id.fiberMaxValue);
-        this.maxProteinEditText = this.view.findViewById(R.id.proteinMaxValue);
+        this.fatEditText = this.view.findViewById(R.id.nutritionFactsFilterFatValue);
+        this.carbEditText = this.view.findViewById(R.id.nutritionFactsFilterCarbValue);
+        this.fiberEditText = this.view.findViewById(R.id.nutritionFactsFilterFiberValue);
+        this.proteinEditText = this.view.findViewById(R.id.nutritionFactsFilterProteinValue);
         this.textWatcher = new TextWatcher() {
             public void afterTextChanged(Editable s) {}
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setRecommendedMaxValuesText(Utils.EMPTY);
+                setRecommendedValuesText(Utils.EMPTY);
                 removeTextChangedListeners();
             }};
-        setResetButton();
-        if (isFactsFilerHasRecommendedFacts()) {
-            setRecommendedMaxValuesText(recommendedMaxValues);
+        this.view.findViewById(R.id.resetToRecommendedButton)
+                .setOnClickListener(this.resetButtonClick);
+        if (isFactsFilterHasRecommendedFacts()) {
+            setRecommendedValuesText(recommendedFactValues);
         }
         setTextChangedListeners();
     }
 
-    private boolean isFactsFilerHasRecommendedFacts() {
-        Double maxFat = this.factsFilter.getMaxFat();
-        Double maxCarb = this.factsFilter.getMaxCarb();
-        Double maxFiber = this.factsFilter.getMaxFiber();
-        Double maxProtein = this.factsFilter.getMaxProtein();
-        if ((maxFat == null) || (maxCarb == null) || (maxFiber == null) || (maxProtein == null)) {
+    private boolean isFactsFilterHasRecommendedFacts() {
+        Double fat = this.factsFilter.getFat();
+        Double carb = this.factsFilter.getCarb();
+        Double fiber = this.factsFilter.getFiber();
+        Double protein = this.factsFilter.getProtein();
+        if ((fat == null) || (carb == null) || (fiber == null) || (protein == null)) {
             return false;
         }
-        return (maxFat == this.recommendedFacts.getFat())
-                && (maxCarb == this.recommendedFacts.getCarb())
-                && (maxFiber == this.recommendedFacts.getFiber())
-                && (maxProtein == this.recommendedFacts.getProtein());
-    }
-
-    private void setResetButton() {
-        Button resetButton = this.view.findViewById(R.id.resetToRecommendedButton);
-        resetButton.setVisibility(View.VISIBLE);
-        resetButton.setOnClickListener(this.resetButtonClick);
+        return (Utils.roundTwo(fat) == Utils.roundTwo(this.recommendedFacts.getFat()))
+                && (Utils.roundTwo(carb) == Utils.roundTwo(this.recommendedFacts.getCarb()))
+                && (Utils.roundTwo(fiber) == Utils.roundTwo(this.recommendedFacts.getFiber()))
+                && (Utils.roundTwo(protein) == Utils.roundTwo(this.recommendedFacts.getProtein()));
     }
 
     private void setTextChangedListeners() {
-        setMaxValueTextChanged(this.maxFatEditText);
-        setMaxValueTextChanged(this.maxCarbEditText);
-        setMaxValueTextChanged(this.maxFiberEditText);
-        setMaxValueTextChanged(this.maxProteinEditText);
+        setMaxValueTextChanged(this.fatEditText);
+        setMaxValueTextChanged(this.carbEditText);
+        setMaxValueTextChanged(this.fiberEditText);
+        setMaxValueTextChanged(this.proteinEditText);
     }
 
     private void removeTextChangedListeners() {
-        removeMaxValueTextChanged(this.maxFatEditText);
-        removeMaxValueTextChanged(this.maxCarbEditText);
-        removeMaxValueTextChanged(this.maxFiberEditText);
-        removeMaxValueTextChanged(this.maxProteinEditText);
+        removeMaxValueTextChanged(this.fatEditText);
+        removeMaxValueTextChanged(this.carbEditText);
+        removeMaxValueTextChanged(this.fiberEditText);
+        removeMaxValueTextChanged(this.proteinEditText);
     }
 
     private void setMaxValueTextChanged(EditText valueEditText) {
@@ -126,32 +126,53 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
     }
 
     private Double getDoubleFromTextWithNulls(String text) {
-        if (!text.isEmpty()) {
-            return Double.parseDouble(text);
-        } else {
-            return null;
-        }
+        return (!Utils.isEmptyNumber(text)) ? Double.parseDouble(text) : null;
     }
 
     private Double getDoubleFromViewWithNulls(int viewId) {
         return getDoubleFromTextWithNulls(getTextFromView(viewId));
     }
 
-    private NutritionFactsFilter getFactsFilterFromFields() {
-        Double maxFat = getDoubleFromViewWithNulls(R.id.fatMaxValue);
-        Double maxCarb = getDoubleFromViewWithNulls(R.id.carbMaxValue);
-        Double maxFiber = getDoubleFromViewWithNulls(R.id.fiberMaxValue);
-        Double maxProtein = getDoubleFromViewWithNulls(R.id.proteinMaxValue);
-        Double minFat = getDoubleFromViewWithNulls(R.id.fatMinValue);
-        Double minCarb = getDoubleFromViewWithNulls(R.id.carbMinValue);
-        Double minFiber = getDoubleFromViewWithNulls(R.id.fiberMinValue);
-        Double minProtein = getDoubleFromViewWithNulls(R.id.proteinMinValue);
-        return new NutritionFactsFilter(maxFat, maxCarb, maxFiber, maxProtein, minFat,
-                minCarb, minFiber, minProtein);
+    private Double getPercentFromViewWithNulls(int viewId) {
+        Double percent = getDoubleFromViewWithNulls(viewId);
+        return (percent != null) ? (percent / Utils.PERCENT_SCALE) : null;
     }
 
-    private void setRecommendedMaxValuesText(String text) {
-        setViewText(R.id.recommendedMaxValuesText, text);
+    private NutritionFactsFilter getFactsFilterFromFields() {
+        Double fat = getDoubleFromViewWithNulls(R.id.nutritionFactsFilterFatValue);
+        Double carb = getDoubleFromViewWithNulls(R.id.nutritionFactsFilterCarbValue);
+        Double fiber = getDoubleFromViewWithNulls(R.id.nutritionFactsFilterFiberValue);
+        Double protein = getDoubleFromViewWithNulls(R.id.nutritionFactsFilterProteinValue);
+        Double minPercent = getPercentFromViewWithNulls(R.id.nutritionFactsFilterMinAmountValue);
+        Double maxPercent = getPercentFromViewWithNulls(R.id.nutritionFactsFilterMaxAmountValue);
+        return new NutritionFactsFilter(fat, carb, fiber, protein, minPercent, maxPercent);
+    }
+
+    private void setRecommendedValuesText(String text) {
+        setViewText(R.id.recommendedValuesText, text);
+    }
+
+    private View.OnClickListener getEraseButtonListener(final int inputBarId) {
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                clearViewText(inputBarId);
+            }
+        };
+    }
+
+    private void setEraseButtons() {
+        this.view.findViewById(R.id.fatInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterFatValue));
+        this.view.findViewById(R.id.carbInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterCarbValue));
+        this.view.findViewById(R.id.fiberInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterFiberValue));
+        this.view.findViewById(R.id.proteinInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterProteinValue));
+        this.view.findViewById(R.id.minAmountInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterMinAmountValue));
+        this.view.findViewById(R.id.maxAmountInputEraseButton).setOnClickListener(
+                getEraseButtonListener(R.id.nutritionFactsFilterMaxAmountValue));
     }
 
     public NutritionFactsFilterDialog(NutritionFactsFilter factsFilter,
@@ -175,6 +196,7 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
             }
         });
         populateFields();
+        setEraseButtons();
         return builder.create();
     }
 

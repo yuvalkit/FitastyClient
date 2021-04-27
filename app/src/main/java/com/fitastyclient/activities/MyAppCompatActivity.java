@@ -59,9 +59,9 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewText(textViewId, Utils.EMPTY);
     }
 
-    protected void setViewTextAndColor(int viewId, String text, int colorName) {
+    protected void setViewTextAndColor(int viewId, String text, int colorId) {
         TextView view = findViewById(viewId);
-        view.setTextColor(getResources().getColor(colorName));
+        view.setTextColor(getResources().getColor(colorId));
         view.setText(text);
     }
 
@@ -150,14 +150,24 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewText(viewId, Utils.TEMP_FILLER);
     }
 
-    protected void setViewWithValue(int viewId, double value) {
-        setViewWithTempFiller(viewId);
-        setViewText(viewId, Utils.cleanDoubleToString(value));
+    protected int getCalorieInfoTableTextColor(boolean toColor, double value,
+                                                double threshold, int defaultColorId) {
+        return (toColor) ? (((value > threshold) || (value < -threshold))
+                ? R.color.red : R.color.green) : defaultColorId;
     }
 
-    protected void setViewWithFact(int viewId, double value) {
+    protected void setViewWithValue(int viewId, double value, boolean toColor) {
         setViewWithTempFiller(viewId);
-        setViewText(viewId, Utils.cleanDoubleToString(value) + Utils.GRAM);
+        int colorId = getCalorieInfoTableTextColor(toColor, value,
+                Utils.CALORIES_THRESHOLD, R.color.black);
+        setViewTextAndColor(viewId, Utils.cleanDoubleToString(value), colorId);
+    }
+
+    protected void setViewWithFact(int viewId, double value, boolean toColor) {
+        setViewWithTempFiller(viewId);
+        int colorId = getCalorieInfoTableTextColor(toColor, value,
+                Utils.NUTRITION_FACTS_THRESHOLD, R.color.gray);
+        setViewTextAndColor(viewId, Utils.cleanDoubleToString(value) + Utils.GRAM, colorId);
     }
 
     protected Intent getIntentWithBooleanFlag(Context fromContext, Class<?> toClass,
@@ -308,25 +318,25 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         difference.setFat(fatDifference);
         difference.setProtein(proteinDifference);
 
-        setViewWithValue(recommendedCaloriesId, caloriesRecommended);
-        setViewWithValue(currentCaloriesId, currentCalories);
-        setViewWithValue(CaloriesDifferenceId, caloriesDifference);
+        setViewWithValue(recommendedCaloriesId, caloriesRecommended, false);
+        setViewWithValue(currentCaloriesId, currentCalories, false);
+        setViewWithValue(CaloriesDifferenceId, caloriesDifference, true);
 
-        setViewWithFact(recommendedFatId, fatRecommended);
-        setViewWithFact(currentFatId, currentFat);
-        setViewWithFact(fatDifferenceId, fatDifference);
+        setViewWithFact(recommendedFatId, fatRecommended, false);
+        setViewWithFact(currentFatId, currentFat, false);
+        setViewWithFact(fatDifferenceId, fatDifference, true);
 
-        setViewWithFact(recommendedCarbId, carbRecommended);
-        setViewWithFact(currentCarbId, currentCarb);
-        setViewWithFact(carbDifferenceId, carbDifference);
+        setViewWithFact(recommendedCarbId, carbRecommended, false);
+        setViewWithFact(currentCarbId, currentCarb, false);
+        setViewWithFact(carbDifferenceId, carbDifference, true);
 
-        setViewWithFact(recommendedFiberId, fiberRecommended);
-        setViewWithFact(currentFiberId, currentFiber);
-        setViewWithFact(fiberDifferenceId, fiberDifference);
+        setViewWithFact(recommendedFiberId, fiberRecommended, false);
+        setViewWithFact(currentFiberId, currentFiber, false);
+        setViewWithFact(fiberDifferenceId, fiberDifference, true);
 
-        setViewWithFact(recommendedProteinId, proteinRecommended);
-        setViewWithFact(currentProteinId, currentProtein);
-        setViewWithFact(proteinDifferenceId, proteinDifference);
+        setViewWithFact(recommendedProteinId, proteinRecommended, false);
+        setViewWithFact(currentProteinId, currentProtein, false);
+        setViewWithFact(proteinDifferenceId, proteinDifference, true);
     }
 
 }

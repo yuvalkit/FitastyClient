@@ -99,9 +99,14 @@
     <!--  nutrition_facts_filter_dialog strings  -->
     <string name="min">Min</string>
     <string name="max">Max</string>
+    <string name="fact_fields_explanation">The items search searches according to these facts values.</string>
     <string name="filter_is_per_serving">For ingredients, the filter is per serving size.</string>
-    <string name="leave_empty_for_no_filter">Leave a fact value empty for no filter on that fact.</string>
+    <string name="amount_fields_explanation">The min-max amount fields set the amount percent range for the items search.</string>
+    <string name="leave_empty_for_no_filter">Leave a field value empty for no filter on that field.</string>
     <string name="reset_to_recommended">Reset to recommended values</string>
+    <string name="min_amount">Min Amount:</string>
+    <string name="max_amount">Max Amount:</string>
+    <string name="percent">%</string>
 
     <!--  my_diet_diaries_layout strings  -->
 

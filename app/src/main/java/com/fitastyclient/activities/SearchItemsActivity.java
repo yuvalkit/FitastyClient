@@ -56,7 +56,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
     static public String itemAddedToContentFormat = "Item added to %s content.";
     static public String searchRefreshedText = "\nSearch refreshed.";
     static public String noItemsFound = "No items found.";
-    static public String amountStringFormat = "%s";
+    static public String amountUnitsFormat = "%s";
 
     private TableLayout table;
     private CalorieInfo recommendedFacts;
@@ -78,6 +78,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                         intent.getSerializableExtra(Utils.CALORIE_INFO);
                 assert itemCalorieInfo != null;
                 factsFilter.subtractMaxValuesByCalorieInfo(itemCalorieInfo);
+                recommendedFacts.subtractOtherCalorieInfo(itemCalorieInfo);
             } else if (action.equals(Utils.UPDATE_FACTS_FILTER)) {
                 factsFilter = (NutritionFactsFilter)
                         intent.getSerializableExtra(Utils.FACTS_FILTER);
@@ -150,13 +151,14 @@ public class SearchItemsActivity extends MyAppCompatActivity {
 
     private void addIngredientsToTable(List<ShortIngredient> ingredients) {
         for (ShortIngredient ingredient : ingredients) {
-            addItemToTable(ingredient.getIngredientName(), true, ingredient.getIsLiquid());
+            addItemToTable(ingredient.getIngredientName(), true,
+                    ingredient.getIsLiquid(), ingredient.getAmount());
         }
     }
 
     private void addDishesToTable(List<ShortDish> dishes) {
         for (ShortDish dish : dishes) {
-            addItemToTable(dish.getDishName(), false, false);
+            addItemToTable(dish.getDishName(), false, false, dish.getPercent());
         }
     }
 
@@ -221,34 +223,42 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             @Override
             public void onClick(View v) {
                 String amountText = editText.getText().toString();
-                if (amountText.isEmpty()) {
+                if (Utils.isEmptyNumber(amountText)) {
                     displaySearchInfoError(mustEnterAmount);
                     return;
                 }
                 clearSearchInfoText();
                 double amount = Double.parseDouble(amountText);
-                if (!isIngredient) amount /= 100;
+                if (!isIngredient) amount /= Utils.PERCENT_SCALE;
                 sendItemToParentActivity(itemName, isIngredient, isLiquid, amount);
             }
         });
         row.addView(view);
     }
 
-    private EditText getAmountInputBar(boolean isIngredient, boolean isLiquid) {
+    private EditText getAmountInputBar(boolean isIngredient, boolean isLiquid, double amount) {
         EditText editText = new EditText(this);
         String units = (isIngredient) ? ((isLiquid) ? Utils.ML : Utils.GRAM) : Utils.PERCENT;
-        String amountText = String.format(amountStringFormat, units);
+        String amountStr;
+        if (amount == Double.POSITIVE_INFINITY) {
+            amountStr = (this.isForMeal) ? (Utils.INFINITY + Utils.SPACE) : Utils.EMPTY;
+        } else {
+            if (!isIngredient) amount *= Utils.PERCENT_SCALE;
+            amountStr = Utils.cleanDoubleToString(amount);
+        }
+        String amountText = amountStr + String.format(amountUnitsFormat, units);
         editText.setHint(amountText);
         editText.setTextSize(editTextTextSize);
         editText.setWidth(editTextWidth);
         int inputType = InputType.TYPE_CLASS_NUMBER;
         if (isIngredient) inputType |= InputType.TYPE_NUMBER_FLAG_DECIMAL;
         editText.setInputType(inputType);
-        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
         return editText;
     }
 
-    private void addItemToTable(String itemName, boolean isIngredient, boolean isLiquid) {
+    private void addItemToTable(String itemName, boolean isIngredient,
+                                boolean isLiquid, double amount) {
+        if ((amount != Double.POSITIVE_INFINITY) && (Utils.roundTwo(amount) == 0)) return;
         TableRow row = new TableRow(this);
         String type = (isIngredient) ? ingredientType : dishType;
         int heightFactor = (itemName.length() / maxNameSizeInRow);
@@ -257,7 +267,7 @@ public class SearchItemsActivity extends MyAppCompatActivity {
                 viewLeftPadding, false, heightGaps, heightFactor, 0);
         addTextViewToRow(row, itemName, R.color.black, nameWidth, itemRowHeight, viewWeight,
                 viewLeftPadding, false, heightGaps, heightFactor, 0);
-        EditText editText = getAmountInputBar(isIngredient, isLiquid);
+        EditText editText = getAmountInputBar(isIngredient, isLiquid, amount);
         row.addView(editText);
         addAddButtonToRow(row, itemName, isIngredient, isLiquid, editText);
         this.table.addView(row);
@@ -280,7 +290,8 @@ public class SearchItemsActivity extends MyAppCompatActivity {
             this.recommendedFacts = (CalorieInfo) getIntent()
                     .getSerializableExtra(Utils.CALORIE_INFO);
             assert recommendedFacts != null;
-            this.factsFilter = new NutritionFactsFilter(this.recommendedFacts);
+            this.factsFilter = new NutritionFactsFilter(this.recommendedFacts,
+                    Utils.FACTS_FILTER_DEFAULT_MIN_PERCENT, Utils.FACTS_FILTER_DEFAULT_MAX_PERCENT);
             decreaseItemsTableHeight();
         } else {
             makeViewGone(R.id.nutritionFactsFilterButton);

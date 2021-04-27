@@ -19,6 +19,7 @@ import com.fitastyclient.data_holders.CalorieInfo;
 import com.fitastyclient.data_holders.DietDiary;
 import com.fitastyclient.data_holders.DietDiariesObj;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -261,10 +262,13 @@ public class MyDietDiariesActivity extends MyAppCompatActivity {
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ADD_DIET_DIARY));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.EDIT_DIET_DIARY));
         this.table = findViewById(R.id.myDietDiariesTable);
-        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
-        this.dietDiaries = ((DietDiariesObj) Objects.requireNonNull(
-                getIntent().getSerializableExtra(Utils.DIET_DIARIES_OBJ))).getDietDiaries();
-        assert this.dietDiaries != null;
+//        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
+//        this.dietDiaries = ((DietDiariesObj) Objects.requireNonNull(
+//                getIntent().getSerializableExtra(Utils.DIET_DIARIES_OBJ))).getDietDiaries();
+
+        this.username = "123";
+        this.dietDiaries = new ArrayList<>();
+
         if (!this.dietDiaries.isEmpty()) {
             addDietDiariesToTable();
         }

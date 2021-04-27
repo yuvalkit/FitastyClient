@@ -13,6 +13,8 @@ import com.fitastyclient.data_holders.NameExistObj;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Locale;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class Utils {
     static public String COLON = ":";
     static public String PERCENT = "%";
     static public String ZERO = "0";
+    static public String INFINITY = "∞";
     static public String CLOSE_BRACKET = "}";
     static public String CLOSE = "Close";
     static public String CANCEL = "Cancel";
@@ -80,6 +83,14 @@ public class Utils {
     static public double FAT_CALORIE_FACTOR = 9;
     static public double CARB_CALORIE_FACTOR = 4;
     static public double PROTEIN_CALORIE_FACTOR = 4;
+
+    static public double FACTS_FILTER_DEFAULT_MIN_PERCENT = 0.1;
+    static public double FACTS_FILTER_DEFAULT_MAX_PERCENT = 10;
+
+    static public double CALORIES_THRESHOLD = 100;
+    static public double NUTRITION_FACTS_THRESHOLD = 5;
+
+    static public double PERCENT_SCALE = 100;
 
     public enum ActivityType { CREATE, EDIT, INFO }
 
@@ -175,5 +186,20 @@ public class Utils {
     public static Api getRetrofitApiWithNulls() {
         Gson gson = new GsonBuilder().serializeNulls().create();
         return getRetrofitApiByFactory(GsonConverterFactory.create(gson));
+    }
+
+    public static double roundTwo(double value) {
+        int places = 2;
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public static Double zeroMax(Double value) {
+        return (value != null) ? Math.max(value, 0) : null;
+    }
+
+    public static boolean isEmptyNumber(String num) {
+        return num.isEmpty() || num.equals(Utils.DOT);
     }
 }
