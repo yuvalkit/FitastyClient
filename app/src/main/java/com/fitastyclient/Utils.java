@@ -115,7 +115,7 @@ public class Utils {
         v.setGravity(Gravity.CENTER);
         toast.setGravity(0, 0, 0);
         toast.getView().getBackground().setColorFilter(
-                context.getResources().getColor(R.color.darkGray), PorterDuff.Mode.SRC_IN);
+                context.getResources().getColor(R.color.gray), PorterDuff.Mode.SRC_IN);
         toast.show();
     }
 

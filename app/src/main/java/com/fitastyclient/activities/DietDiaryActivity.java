@@ -103,20 +103,51 @@ public class DietDiaryActivity extends MyAppCompatActivity {
             clearInfoTexts();
             if (checkFields()) {
                 DietDiary newDietDiary = getDietDiaryFromFields();
-                if (activityType == Utils.ActivityType.CREATE) {
-                    if (isDifferenceRecommended) createDietDiary(newDietDiary);
-                    else displayEditCreatePopup(newDietDiary, true);
+                boolean isCreateDietDiary = (activityType == Utils.ActivityType.CREATE);
+                if (!isCreateDietDiary && newDietDiary.equals(dietDiary)) {
+                    displayDietDiaryError(noDietDiaryChanges);
                 } else {
-                    if (newDietDiary.equals(dietDiary)) {
-                        displayDietDiaryError(noDietDiaryChanges);
-                    } else {
-                        if (isDifferenceRecommended) editDietDiary(newDietDiary);
-                        else displayEditCreatePopup(newDietDiary, false);
-                    }
+                    dietDiaryCreateEditOrPopup(newDietDiary, isCreateDietDiary);
                 }
             }
         }
     };
+
+    private void dietDiaryCreateEditOrPopup(DietDiary newDietDiary, boolean isCreateDietDiary) {
+        if (this.isDifferenceRecommended) createOrEditDietDiary(newDietDiary, isCreateDietDiary);
+        else displayEditCreatePopup(newDietDiary, isCreateDietDiary);
+    }
+
+    private void displayEditCreatePopup(final DietDiary newDietDiary,
+                                        final boolean isCreateDietDiary) {
+        String activityTypeText = (isCreateDietDiary) ?
+                createText.toLowerCase() : editText.toLowerCase();
+        String editCreatePopupText = String.format(editCreatePopupTextFormat, activityTypeText);
+        displayAlertPopup(editCreatePopupTitle, editCreatePopupText, R.color.mildGray,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        createOrEditDietDiary(newDietDiary, isCreateDietDiary);
+                    }
+        });
+    }
+
+    private void editDietDiary(final DietDiary newDietDiary) {
+        Utils.getRetrofitApi().updateDietDiary(this.username,
+                this.dietDiary.getDietDiaryName(), newDietDiary)
+                .enqueue(getDietDiaryCallback(newDietDiary.getDietDiaryName(),
+                        Utils.EDIT_DIET_DIARY, dietDiaryEdited, dietDiaryEditFailed));
+    }
+
+    private void createDietDiary(final DietDiary newDietDiary) {
+        Utils.getRetrofitApi().insertDietDiary(this.username, newDietDiary)
+                .enqueue(getDietDiaryCallback(newDietDiary.getDietDiaryName(),
+                Utils.ADD_DIET_DIARY, dietDiaryCreated, dietDiaryCreationFailed));
+    }
+
+    private void createOrEditDietDiary(DietDiary dietDiary, boolean isCreateDietDiary) {
+        if (isCreateDietDiary) createDietDiary(dietDiary);
+        else editDietDiary(dietDiary);
+    }
 
     private void displayDietDiaryError(String errorText) {
         displayError(R.id.createEditDietDiaryInfoText, errorText);
@@ -180,33 +211,6 @@ public class DietDiaryActivity extends MyAppCompatActivity {
                 displayDietDiaryError(errorText);
             }
         };
-    }
-
-    private void displayEditCreatePopup(final DietDiary dietDiary,
-                                        final boolean isCreateDietDiary) {
-        String activityTypeText = (isCreateDietDiary) ?
-                createText.toLowerCase() : editText.toLowerCase();
-        String editCreatePopupText = String.format(editCreatePopupTextFormat, activityTypeText);
-        displayAlertPopup(editCreatePopupTitle, editCreatePopupText, R.color.mildGray,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (isCreateDietDiary) createDietDiary(dietDiary);
-                        else editDietDiary(dietDiary);
-                    }
-                });
-    }
-
-    private void editDietDiary(final DietDiary dietDiary) {
-        Utils.getRetrofitApi().updateDietDiary(this.username,
-                this.dietDiary.getDietDiaryName(), dietDiary)
-                .enqueue(getDietDiaryCallback(dietDiary.getDietDiaryName(),
-                        Utils.EDIT_DIET_DIARY, dietDiaryEdited, dietDiaryEditFailed));
-    }
-
-    private void createDietDiary(final DietDiary dietDiary) {
-        Utils.getRetrofitApi().insertDietDiary(this.username,
-                dietDiary).enqueue(getDietDiaryCallback(dietDiary.getDietDiaryName(),
-                Utils.ADD_DIET_DIARY, dietDiaryCreated, dietDiaryCreationFailed));
     }
 
     private Intent getDietDiaryIntent(DietDiary dietDiary, String intentFlag) {
@@ -380,11 +384,11 @@ public class DietDiaryActivity extends MyAppCompatActivity {
                 R.id.carbRecommended, R.id.carbSelectedMeals, R.id.carbDifference,
                 R.id.fiberRecommended, R.id.fiberSelectedMeals, R.id.fiberDifference,
                 R.id.proteinRecommended, R.id.proteinSelectedMeals, R.id.proteinDifference);
-        updateIsDifferenceRecommended();
+        this.isDifferenceRecommended = getIsDifferenceRecommended();
     }
 
-    private void updateIsDifferenceRecommended() {
-        this.isDifferenceRecommended = true;
+    private boolean getIsDifferenceRecommended() {
+        boolean isRecommended = true;
         double fatDifference = this.differenceCalorieInfo.getFat();
         double carbDifference = this.differenceCalorieInfo.getCarb();
         double fiberDifference = this.differenceCalorieInfo.getFiber();
@@ -393,14 +397,15 @@ public class DietDiaryActivity extends MyAppCompatActivity {
                 || isValueOutOfNutritionFactsThresholdRange(carbDifference)
                 || isValueOutOfNutritionFactsThresholdRange(fiberDifference)
                 || isValueOutOfNutritionFactsThresholdRange(proteinDifference)) {
-            this.isDifferenceRecommended = false;
+            isRecommended = false;
         } else {
             double caloriesDifference = Utils.getCalories(
                     fatDifference, carbDifference, proteinDifference);
             if (isValueOutOfCaloriesThresholdRange(caloriesDifference)) {
-                this.isDifferenceRecommended = false;
+                isRecommended = false;
             }
         }
+        return isRecommended;
     }
 
     private boolean isValueOutOfCaloriesThresholdRange(double value) {
