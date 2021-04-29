@@ -73,7 +73,7 @@ public class SettingsActivity extends MyAppCompatActivity {
     }
 
     private void displayDeleteAccountPopup() {
-        displayDeletePopup(deleteTitle, areYouSureText, R.color.red,
+        displayAlertPopup(deleteTitle, areYouSureText, R.color.red,
                 new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 tryToDeleteAccount();

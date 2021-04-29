@@ -202,4 +202,8 @@ public class Utils {
     public static boolean isEmptyNumber(String num) {
         return num.isEmpty() || num.equals(Utils.DOT);
     }
+
+    public static boolean isValueInThresholdRange(double value, double threshold) {
+        return Math.abs(value) < threshold;
+    }
 }

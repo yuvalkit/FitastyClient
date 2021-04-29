@@ -29,6 +29,8 @@ import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.dialogs.DishInfoDialog;
 import com.fitastyclient.dialogs.IngredientInfoDialog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.ResponseBody;
@@ -150,20 +152,20 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewText(viewId, Utils.TEMP_FILLER);
     }
 
-    protected int getCalorieInfoTableTextColor(boolean toColor, double value,
+    private int getCalorieInfoTableTextColor(boolean toColor, double value,
                                                 double threshold, int defaultColorId) {
-        return (toColor) ? (((value > threshold) || (value < -threshold))
-                ? R.color.red : R.color.green) : defaultColorId;
+        return (toColor) ? (Utils.isValueInThresholdRange(value, threshold)
+                ? R.color.green : R.color.red) : defaultColorId;
     }
 
-    protected void setViewWithValue(int viewId, double value, boolean toColor) {
+    private void setViewWithValue(int viewId, double value, boolean toColor) {
         setViewWithTempFiller(viewId);
         int colorId = getCalorieInfoTableTextColor(toColor, value,
                 Utils.CALORIES_THRESHOLD, R.color.black);
         setViewTextAndColor(viewId, Utils.cleanDoubleToString(value), colorId);
     }
 
-    protected void setViewWithFact(int viewId, double value, boolean toColor) {
+    private void setViewWithFact(int viewId, double value, boolean toColor) {
         setViewWithTempFiller(viewId);
         int colorId = getCalorieInfoTableTextColor(toColor, value,
                 Utils.NUTRITION_FACTS_THRESHOLD, R.color.gray);
@@ -215,8 +217,8 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewVisibility(viewId, View.GONE);
     }
 
-    protected void displayDeletePopup(String titleText, String bodyText, int iconColorId,
-                                      DialogInterface.OnClickListener onClickListener) {
+    protected void displayAlertPopup(String titleText, String bodyText, int iconColorId,
+                                     DialogInterface.OnClickListener onClickListener) {
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
                 .setTitle(titleText)
                 .setMessage(bodyText)
@@ -228,7 +230,6 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
                 .setColorFilter(getColorById(iconColorId),
                         android.graphics.PorterDuff.Mode.SRC_IN);
     }
-
     protected void addInfoButtonToRow(TableRow row, final String itemName,
                                       final boolean isIngredient, final int infoTextId) {
         int infoIconSize = 90;
@@ -338,5 +339,4 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewWithFact(currentProteinId, currentProtein, false);
         setViewWithFact(proteinDifferenceId, proteinDifference, true);
     }
-
 }

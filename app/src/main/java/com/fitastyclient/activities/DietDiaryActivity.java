@@ -2,6 +2,7 @@ package com.fitastyclient.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -43,7 +44,11 @@ public class DietDiaryActivity extends MyAppCompatActivity {
     public static String createDietDiaryTitle = "Create New Diet Diary";
     public static String editDietDiaryTitle = "Edit Diet Diary";
     public static String dietDiaryInfoTitle = "Diet Diary Information";
-    static public String noDietDiaryChanges = "Can't edit diet diary if there are no changes.";
+    public static String noDietDiaryChanges = "Can't edit diet diary if there are no changes.";
+    public static String editCreatePopupTitle = "Values are not recommended";
+    public static String editCreatePopupTextFormat =
+            "This diet diary calorie information difference is not recommended for you.\n\n" +
+                    "Do you want to %s diet diary anyway?";
 
     public static int emptyWidth1 = 30;
     public static int emptyWidth2 = 20;
@@ -66,6 +71,7 @@ public class DietDiaryActivity extends MyAppCompatActivity {
     private CalorieInfo mealsCalorieInfo;
     private CalorieInfo differenceCalorieInfo;
     private int newMealId;
+    private boolean isDifferenceRecommended;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -96,10 +102,17 @@ public class DietDiaryActivity extends MyAppCompatActivity {
         public void onClick(View v) {
             clearInfoTexts();
             if (checkFields()) {
+                DietDiary newDietDiary = getDietDiaryFromFields();
                 if (activityType == Utils.ActivityType.CREATE) {
-                    createDietDiary();
+                    if (isDifferenceRecommended) createDietDiary(newDietDiary);
+                    else displayEditCreatePopup(newDietDiary, true);
                 } else {
-                    editDietDiary();
+                    if (newDietDiary.equals(dietDiary)) {
+                        displayDietDiaryError(noDietDiaryChanges);
+                    } else {
+                        if (isDifferenceRecommended) editDietDiary(newDietDiary);
+                        else displayEditCreatePopup(newDietDiary, false);
+                    }
                 }
             }
         }
@@ -169,20 +182,28 @@ public class DietDiaryActivity extends MyAppCompatActivity {
         };
     }
 
-    private void editDietDiary() {
-        final DietDiary dietDiary = getDietDiaryFromFields();
-        if (dietDiary.equals(this.dietDiary)) {
-            displayError(R.id.createEditDietDiaryInfoText, noDietDiaryChanges);
-            return;
-        }
+    private void displayEditCreatePopup(final DietDiary dietDiary,
+                                        final boolean isCreateDietDiary) {
+        String activityTypeText = (isCreateDietDiary) ?
+                createText.toLowerCase() : editText.toLowerCase();
+        String editCreatePopupText = String.format(editCreatePopupTextFormat, activityTypeText);
+        displayAlertPopup(editCreatePopupTitle, editCreatePopupText, R.color.mildGray,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (isCreateDietDiary) createDietDiary(dietDiary);
+                        else editDietDiary(dietDiary);
+                    }
+                });
+    }
+
+    private void editDietDiary(final DietDiary dietDiary) {
         Utils.getRetrofitApi().updateDietDiary(this.username,
                 this.dietDiary.getDietDiaryName(), dietDiary)
                 .enqueue(getDietDiaryCallback(dietDiary.getDietDiaryName(),
                         Utils.EDIT_DIET_DIARY, dietDiaryEdited, dietDiaryEditFailed));
     }
 
-    private void createDietDiary() {
-        final DietDiary dietDiary = getDietDiaryFromFields();
+    private void createDietDiary(final DietDiary dietDiary) {
         Utils.getRetrofitApi().insertDietDiary(this.username,
                 dietDiary).enqueue(getDietDiaryCallback(dietDiary.getDietDiaryName(),
                 Utils.ADD_DIET_DIARY, dietDiaryCreated, dietDiaryCreationFailed));
@@ -359,6 +380,35 @@ public class DietDiaryActivity extends MyAppCompatActivity {
                 R.id.carbRecommended, R.id.carbSelectedMeals, R.id.carbDifference,
                 R.id.fiberRecommended, R.id.fiberSelectedMeals, R.id.fiberDifference,
                 R.id.proteinRecommended, R.id.proteinSelectedMeals, R.id.proteinDifference);
+        updateIsDifferenceRecommended();
+    }
+
+    private void updateIsDifferenceRecommended() {
+        this.isDifferenceRecommended = true;
+        double fatDifference = this.differenceCalorieInfo.getFat();
+        double carbDifference = this.differenceCalorieInfo.getCarb();
+        double fiberDifference = this.differenceCalorieInfo.getFiber();
+        double proteinDifference = this.differenceCalorieInfo.getProtein();
+        if (isValueOutOfNutritionFactsThresholdRange(fatDifference)
+                || isValueOutOfNutritionFactsThresholdRange(carbDifference)
+                || isValueOutOfNutritionFactsThresholdRange(fiberDifference)
+                || isValueOutOfNutritionFactsThresholdRange(proteinDifference)) {
+            this.isDifferenceRecommended = false;
+        } else {
+            double caloriesDifference = Utils.getCalories(
+                    fatDifference, carbDifference, proteinDifference);
+            if (isValueOutOfCaloriesThresholdRange(caloriesDifference)) {
+                this.isDifferenceRecommended = false;
+            }
+        }
+    }
+
+    private boolean isValueOutOfCaloriesThresholdRange(double value) {
+        return !Utils.isValueInThresholdRange(value, Utils.CALORIES_THRESHOLD);
+    }
+
+    private boolean isValueOutOfNutritionFactsThresholdRange(double value) {
+        return !Utils.isValueInThresholdRange(value, Utils.NUTRITION_FACTS_THRESHOLD);
     }
 
     private void setToInfoActivity() {

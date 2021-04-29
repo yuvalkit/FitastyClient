@@ -218,7 +218,7 @@ public class MyDietDiariesActivity extends MyAppCompatActivity {
     }
 
     private void displayDeleteDietDiaryPopup(final View view, final String dietDiaryName) {
-        displayDeletePopup(deleteTitle, areYouSureText, R.color.darkYellow,
+        displayAlertPopup(deleteTitle, areYouSureText, R.color.darkYellow,
                 new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 sendDeleteDietDiaryRequest(dietDiaryName, view);
@@ -262,13 +262,9 @@ public class MyDietDiariesActivity extends MyAppCompatActivity {
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ADD_DIET_DIARY));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.EDIT_DIET_DIARY));
         this.table = findViewById(R.id.myDietDiariesTable);
-//        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
-//        this.dietDiaries = ((DietDiariesObj) Objects.requireNonNull(
-//                getIntent().getSerializableExtra(Utils.DIET_DIARIES_OBJ))).getDietDiaries();
-
-        this.username = "123";
-        this.dietDiaries = new ArrayList<>();
-
+        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
+        this.dietDiaries = ((DietDiariesObj) Objects.requireNonNull(
+                getIntent().getSerializableExtra(Utils.DIET_DIARIES_OBJ))).getDietDiaries();
         if (!this.dietDiaries.isEmpty()) {
             addDietDiariesToTable();
         }
