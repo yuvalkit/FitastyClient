@@ -11,14 +11,149 @@
         android:background="@color/backgroundColor"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/newEditAccountCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <CheckBox
+            android:id="@+id/accountVeganCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/darkBlue"
+            android:text="@string/vegan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensitivitiesText2"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/accountLactoseFreeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/darkBlue"
+            android:text="@string/lactose_free"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountVeganCheckBox"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/accountGlutenFreeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="198dp"
+            android:buttonTint="@color/darkBlue"
+            android:text="@string/gluten_free"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountVeganCheckBox" />
+
+        <CheckBox
+            android:id="@+id/accountVegetarianCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/darkBlue"
+            android:text="@string/vegetarian"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensitivitiesText2"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/sensitivitiesText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="35dp"
+            android:text="@string/sensitivities_text"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/diet_type_spinner_relative_layout"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/countryInformationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/countryListView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/countryValue"
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/disabledGray"
+            android:focusable="false"
+            android:textColor="@color/gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weightInformationText"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/countryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/country_text"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weightInformationText"
+            app:layout_constraintVertical_bias="0.0" />
+
         <TextView
             android:id="@+id/createEditInformationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/createEditButton"
+            android:layout_marginTop="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountGlutenFreeCheckBox"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/dietTypeText"
@@ -97,7 +232,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightInformationText"
+            app:layout_constraintTop_toBottomOf="@+id/countryInformationText"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
@@ -117,12 +252,12 @@
             android:id="@+id/weightInput"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="90dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
-            android:maxLength="3"
             android:inputType="number"
+            android:maxLength="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -163,12 +298,12 @@
             android:id="@+id/heightInput"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="90dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
-            android:maxLength="3"
             android:inputType="number"
+            android:maxLength="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -222,12 +357,12 @@
             android:id="@+id/ageInput"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="90dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:ems="10"
-            android:maxLength="3"
             android:inputType="number"
+            android:maxLength="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -299,16 +434,16 @@
 
         <Button
             android:id="@+id/createEditButton"
-            android:layout_width="80dp"
-            android:layout_height="39dp"
-            android:layout_marginTop="970dp"
-            android:layout_marginBottom="100dp"
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="80dp"
             android:background="@color/lightBlue"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createEditInformationText"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
@@ -349,20 +484,6 @@
             android:text="@string/username_text"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/newEditAccountCancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -450,7 +571,7 @@
 
         <RelativeLayout
             android:id="@+id/activity_spinner_relative_layout"
-            android:layout_width="340dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
@@ -465,14 +586,14 @@
 
             <Spinner
                 android:id="@+id/activity_spinner"
-                android:layout_width="340dp"
+                android:layout_width="320dp"
                 android:layout_height="25dp"
                 android:spinnerMode="dropdown" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/goal_spinner_relative_layout"
-            android:layout_width="340dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
@@ -487,14 +608,14 @@
 
             <Spinner
                 android:id="@+id/goal_spinner"
-                android:layout_width="340dp"
+                android:layout_width="320dp"
                 android:layout_height="25dp"
                 android:spinnerMode="dropdown" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/diet_type_spinner_relative_layout"
-            android:layout_width="340dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="5dp"
@@ -509,10 +630,39 @@
 
             <Spinner
                 android:id="@+id/diet_type_spinner"
-                android:layout_width="340dp"
+                android:layout_width="320dp"
                 android:layout_height="25dp"
                 android:spinnerMode="dropdown" />
         </RelativeLayout>
+
+        <SearchView
+            android:id="@+id/countrySearchView"
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/countryValue"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ListView
+            android:id="@+id/countryListView"
+            android:layout_width="220dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="100dp"
+            android:background="@color/extraLightGray"
+            android:nestedScrollingEnabled="true"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/countrySearchView"
+            app:layout_constraintVertical_bias="0.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

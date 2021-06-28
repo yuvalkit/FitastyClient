@@ -19,20 +19,21 @@ import java.util.Set;
 
 public abstract class ItemsTableActivity extends MyAppCompatActivity {
 
-    static public int maxAmountSizeInRow = 4;
-    static public int maxNameSizeInRow = 25;
+    public static int maxAmountSizeInRow = 4;
+    public static int maxNameSizeInRow = 25;
 
-    static public int itemRowHeight = 130;
-    static public int typeWidth = 310;
-    static public int typePadding = 20;
-    static public int nameWidth = 800;
-    static public int namePadding = 20;
-    static public int amountWidth = 260;
+    public static int itemRowHeight = 180;
+    public static int typeWidth = 350;
+    public static int typePadding = 20;
+    public static int nameWidth = 800;
+    public static int namePadding = 20;
+    public static int amountWidth = 290;
 
-    static public int bigWeight = 3;
-    static public int smallWeight = 1;
-    static public int heightGaps = 30;
-    static public int deleteSize = 110;
+    public static int bigWeight = 3;
+    public static int smallWeight = 1;
+    public static int heightGaps = 30;
+    public static int deleteSize = 110;
+    public static int emptyWidth = 50;
 
     protected String typeFlag;
     protected String ingredientFlag;
@@ -117,8 +118,27 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
                 bigWeight, namePadding, toCenter, heightGaps, heightFactor, 0);
         addTextViewToRow(row, amountStr, R.color.darkBlue, amountWidth, itemRowHeight,
                 smallWeight, 0, toCenter, heightGaps, heightFactor, 0);
-        addInfoButtonToRow(row, itemName, isIngredient, infoTextId);
+        addInfoButtonToRow(row, itemName, isIngredient, infoTextId, false);
+        addEmptyTextViewToRow(row, emptyWidth);
         addDeleteButtonToRow(row, itemName, isIngredient, amount, disableDeleteButton);
+        this.table.addView(row);
+    }
+
+    private void addHeaderTextToRow(TableRow row, String text, int width, int weight,
+                                    int padding) {
+        addTextViewToRow(row, text, R.color.black, width, (int) (itemRowHeight / 2),
+                weight, padding, true, 0, 0, 0);
+    }
+
+    protected void addHeaderToTable() {
+        TableRow row = new TableRow(this);
+        row.setBackgroundColor(getColorById(R.color.veryLightBlue));
+        addHeaderTextToRow(row, typeString, typeWidth, smallWeight, typePadding);
+        addHeaderTextToRow(row, nameString, nameWidth, bigWeight, namePadding);
+        addHeaderTextToRow(row, amountString, amountWidth, smallWeight, 0);
+        addInfoButtonToRow(row, Utils.EMPTY, false, 0, true);
+        addEmptyTextViewToRow(row, emptyWidth);
+        addDeleteButtonToRow(row, Utils.EMPTY, false, 0, true);
         this.table.addView(row);
     }
 
@@ -175,6 +195,7 @@ public abstract class ItemsTableActivity extends MyAppCompatActivity {
         this.dishes = new ArrayList<>();
         registerReceiver(getItemBroadcastReceiver(), new IntentFilter(this.ingredientFlag));
         registerReceiver(getItemBroadcastReceiver(), new IntentFilter(this.dishFlag));
+        addHeaderToTable();
     }
 
 }

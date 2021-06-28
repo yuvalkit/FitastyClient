@@ -10,9 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-
 import androidx.annotation.NonNull;
-
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.CalorieInfo;
@@ -20,12 +18,10 @@ import com.fitastyclient.data_holders.DietDiary;
 import com.fitastyclient.data_holders.Meal;
 import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.data_holders.ShortIngredient;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,13 +43,14 @@ public class DietDiaryActivity extends MyAppCompatActivity {
     public static String noDietDiaryChanges = "Can't edit diet diary if there are no changes.";
     public static String editCreatePopupTitle = "Values are not recommended";
     public static String editCreatePopupTextFormat =
-            "This diet diary calorie information difference is not recommended for you.\n\n" +
-                    "Do you want to %s diet diary anyway?";
+            "This diet diary calorie information difference is not recommended for you\n" +
+                    "(there are red values).\n\n" +
+                    "Do you want to %s this diet diary anyway?";
 
     public static int emptyWidth1 = 30;
     public static int emptyWidth2 = 20;
     public static int mealTextWidth = 100;
-    public static int mealTextHeight = 150;
+    public static int mealTextHeight = 250;
     public static int mealTextWeight = 1;
     public static int caloriesTextWeight = 2;
     public static int mealTextSize = 18;
@@ -240,7 +237,8 @@ public class DietDiaryActivity extends MyAppCompatActivity {
     }
 
     private void startMealActivity(int mealId, Utils.ActivityType activityType, Meal meal) {
-        Intent intent = new Intent(DietDiaryActivity.this, MealActivity.class);
+        Intent intent = Utils.getIntentWithUsername(DietDiaryActivity.this,
+                MealActivity.class, username);
         Bundle bundle = new Bundle();
         bundle.putInt(Utils.MEAL_ID, mealId);
         intent.putExtras(bundle);
@@ -389,31 +387,34 @@ public class DietDiaryActivity extends MyAppCompatActivity {
 
     private boolean getIsDifferenceRecommended() {
         boolean isRecommended = true;
+        double fatRecommended = this.recommendedCalorieInfo.getFat();
+        double carbRecommended = this.recommendedCalorieInfo.getCarb();
+        double fiberRecommended = this.recommendedCalorieInfo.getFiber();
+        double proteinRecommended = this.recommendedCalorieInfo.getProtein();
         double fatDifference = this.differenceCalorieInfo.getFat();
         double carbDifference = this.differenceCalorieInfo.getCarb();
         double fiberDifference = this.differenceCalorieInfo.getFiber();
         double proteinDifference = this.differenceCalorieInfo.getProtein();
-        if (isValueOutOfNutritionFactsThresholdRange(fatDifference)
-                || isValueOutOfNutritionFactsThresholdRange(carbDifference)
-                || isValueOutOfNutritionFactsThresholdRange(fiberDifference)
-                || isValueOutOfNutritionFactsThresholdRange(proteinDifference)) {
+        if (isValueOutOfThresholdRange(fatRecommended, fatDifference)
+                || isValueOutOfThresholdRange(carbRecommended, carbDifference)
+                || isValueOutOfThresholdRange(fiberRecommended, fiberDifference)
+                || isValueOutOfThresholdRange(proteinRecommended, proteinDifference)) {
             isRecommended = false;
         } else {
-            double caloriesDifference = Utils.getCalories(
-                    fatDifference, carbDifference, proteinDifference);
-            if (isValueOutOfCaloriesThresholdRange(caloriesDifference)) {
+            double caloriesRecommended = Utils.getCalories(fatRecommended, carbRecommended,
+                    proteinRecommended);
+            double caloriesDifference = Utils.getCalories(fatDifference, carbDifference,
+                    proteinDifference);
+            if (isValueOutOfThresholdRange(caloriesRecommended, caloriesDifference)) {
                 isRecommended = false;
             }
         }
         return isRecommended;
     }
 
-    private boolean isValueOutOfCaloriesThresholdRange(double value) {
-        return !Utils.isValueInThresholdRange(value, Utils.CALORIES_THRESHOLD);
-    }
-
-    private boolean isValueOutOfNutritionFactsThresholdRange(double value) {
-        return !Utils.isValueInThresholdRange(value, Utils.NUTRITION_FACTS_THRESHOLD);
+    private boolean isValueOutOfThresholdRange(double baseValue, double value) {
+        double threshold = baseValue * Utils.GRAY_THRESHOLD_PERCENT;
+        return !Utils.isValueInThresholdRange(value, threshold);
     }
 
     private void setToInfoActivity() {
@@ -422,12 +423,22 @@ public class DietDiaryActivity extends MyAppCompatActivity {
         makeViewInvisible(R.id.dietDiaryActivityButton);
     }
 
+    private void setTablesWidths() {
+        int screenWidth = getScreenWidth();
+        int tablesWidths = (int) (screenWidth * tableWidthPercent);
+        setViewWidth(R.id.dietDiaryMealsTableScrollView, tablesWidths);
+        setViewWidth(R.id.dietDiaryMealsTable, tablesWidths);
+        setViewWidth(R.id.dietDiaryMealsTableScrollView, tablesWidths);
+        setViewWidth(R.id.calorieInfoTableHorizontalScrollView, tablesWidths);
+    }
+
     private void setComponents() {
         findViewById(R.id.dietDiaryActivityCancelIcon).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.mealsTableAddButton).setOnClickListener(this.mealsTableAddButtonClick);
         findViewById(R.id.dietDiaryActivityButton).setOnClickListener(this.createEditButtonClick);
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ADD_MEAL_TO_DIET_DIARY));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.EDIT_DIET_DIARY_MEAL));
+        setTablesWidths();
         this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
         this.table = findViewById(R.id.dietDiaryMealsTable);
         this.activityType = (Utils.ActivityType)

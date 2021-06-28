@@ -4,10 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
@@ -81,13 +79,6 @@ public class SettingsActivity extends MyAppCompatActivity {
         });
     }
 
-    private void startNewAccountActivity(Account account) {
-        Intent intent = getIntentWithBooleanFlag(SettingsActivity.this,
-                AccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, false);
-        intent.putExtra(Utils.ACCOUNT, account);
-        startActivity(intent);
-    }
-
     private void tryToEditAccount() {
         Utils.getRetrofitApi().getAccountInformation(this.username)
                 .enqueue(new Callback<ResponseBody>() {
@@ -98,8 +89,9 @@ public class SettingsActivity extends MyAppCompatActivity {
                             Account account = Utils.getResponseObject(response, Account.class);
                             if (account != null) {
                                 account.setUsername(username);
-                                startNewAccountActivity(account);
                                 clearEditAccountInformation();
+                                tryToCreateEditAccount(SettingsActivity.this, false,
+                                        R.id.editAccountInformationText, account);
                             } else {
                                 displayEditFailed();
                             }

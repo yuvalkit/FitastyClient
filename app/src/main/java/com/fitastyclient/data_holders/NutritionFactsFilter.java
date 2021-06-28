@@ -1,7 +1,6 @@
 package com.fitastyclient.data_holders;
 
 import com.fitastyclient.Utils;
-
 import java.io.Serializable;
 
 public class NutritionFactsFilter implements Serializable {

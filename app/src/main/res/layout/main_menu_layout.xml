@@ -1,120 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@color/backgroundColor"
-    android:layout_height="match_parent">
-
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
+        android:background="@color/backgroundColor"
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/addIngredientButton"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="45dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/lightBlue"
-            android:text="@string/new_ingredient_text"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myDietDiariesButton"
-            app:layout_constraintVertical_bias="0.0" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundColor"
+            tools:layout_editor_absoluteX="-16dp"
+            tools:layout_editor_absoluteY="-38dp">
 
-        <Button
-            android:id="@+id/addDishButton"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="160dp"
-            android:layout_marginEnd="45dp"
-            android:background="@color/lightBlue"
-            android:text="@string/new_dish_text"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/helloText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:text="@string/hello_text"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
-        <Button
-            android:id="@+id/myDietDiariesButton"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="45dp"
-            android:layout_marginTop="160dp"
-            android:background="@color/lightBlue"
-            android:text="@string/my_diet_diaries_text"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/mainMenuInfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="350dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/settingsButton"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="45dp"
-            android:background="@color/lightBlue"
-            android:text="@string/settings_text"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/myDietDiariesButton"
-            app:layout_constraintTop_toBottomOf="@+id/addDishButton"
-            app:layout_constraintVertical_bias="0.0" />
+            <ImageView
+                android:id="@+id/myDietDiariesButton"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="160dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.158"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/diet_diary_icon" />
 
-        <TextView
-            android:id="@+id/logOutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="500dp"
-            android:text="@string/log_out_text"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/addDishButton"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="160dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.84"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/dish_icon" />
 
-        <TextView
-            android:id="@+id/helloText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text="@string/hello_text"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            <ImageView
+                android:id="@+id/addIngredientButton"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myDietDiariesButton"
+                app:layout_constraintVertical_bias="0.15"
+                app:srcCompat="@drawable/ingredient_icon" />
 
-        <TextView
-            android:id="@+id/mainMenuInfoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addIngredientButton"
-            app:layout_constraintVertical_bias="0.0" />
+            <ImageView
+                android:id="@+id/settingsButton"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.84"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addDishButton"
+                app:layout_constraintVertical_bias="0.15"
+                app:srcCompat="@drawable/settings_icon" />
+
+            <TextView
+                android:id="@+id/myDietDiariesIconText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_diet_diaries_text"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/myDietDiariesButton"
+                app:layout_constraintEnd_toEndOf="@+id/myDietDiariesButton"
+                app:layout_constraintStart_toStartOf="@+id/myDietDiariesButton"
+                app:layout_constraintTop_toTopOf="@+id/myDietDiariesButton"
+                app:layout_constraintVertical_bias="0.85" />
+
+            <TextView
+                android:id="@+id/addNewDishIconText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_dish_text"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/addDishButton"
+                app:layout_constraintEnd_toEndOf="@+id/addDishButton"
+                app:layout_constraintStart_toStartOf="@+id/addDishButton"
+                app:layout_constraintTop_toTopOf="@+id/addDishButton"
+                app:layout_constraintVertical_bias="0.85" />
+
+            <TextView
+                android:id="@+id/addNewIngredientIconText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_ingredient_new_line_text"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/addIngredientButton"
+                app:layout_constraintEnd_toEndOf="@+id/addIngredientButton"
+                app:layout_constraintStart_toStartOf="@+id/addIngredientButton"
+                app:layout_constraintTop_toTopOf="@+id/addIngredientButton"
+                app:layout_constraintVertical_bias="0.95" />
+
+            <TextView
+                android:id="@+id/settingsIconText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_text"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/settingsButton"
+                app:layout_constraintEnd_toEndOf="@+id/settingsButton"
+                app:layout_constraintStart_toStartOf="@+id/settingsButton"
+                app:layout_constraintTop_toTopOf="@+id/settingsButton"
+                app:layout_constraintVertical_bias="0.85" />
+
+            <Button
+                android:id="@+id/logOutButton"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="450dp"
+                android:background="@color/veryLightBlue"
+                android:text="@string/log_out_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

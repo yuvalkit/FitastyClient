@@ -10,20 +10,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-
 import androidx.annotation.NonNull;
-
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.CalorieInfo;
 import com.fitastyclient.data_holders.DietDiary;
 import com.fitastyclient.data_holders.DietDiariesObj;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,10 +29,10 @@ public class MyDietDiariesActivity extends MyAppCompatActivity {
     public static String deleteTitle = "Delete Diet Diary";
     public static String areYouSureText = "Are you sure you want to delete this diet diary?";
 
-    public static int emptyWidth1 = 30;
-    public static int emptyWidth2 = 20;
+    public static int emptyWidth1 = 60;
+    public static int emptyWidth2 = 50;
     public static int dietDiaryTextWidth = 100;
-    public static int dietDiaryTextHeight = 150;
+    public static int dietDiaryTextHeight = 200;
     public static int dietDiaryTextWeight = 1;
     public static int dietDiaryTextSize = 18;
     public static int bigLeftPadding = 20;
@@ -256,11 +251,19 @@ public class MyDietDiariesActivity extends MyAppCompatActivity {
         }
     }
 
+    private void setDietDiariesTableWidth() {
+        int screenWidth = getScreenWidth();
+        int dietDiariesTableWidth = (int) (screenWidth * tableWidthPercent);
+        setViewWidth(R.id.myDietDiariesTableScrollView, dietDiariesTableWidth);
+        setViewWidth(R.id.myDietDiariesTable, dietDiariesTableWidth);
+    }
+
     private void setComponents() {
         findViewById(R.id.myDietDiariesCancelButton).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.myDietDiariesAddButton).setOnClickListener(this.addButtonClick);
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.ADD_DIET_DIARY));
         registerReceiver(this.broadcastReceiver, new IntentFilter(Utils.EDIT_DIET_DIARY));
+        setDietDiariesTableWidth();
         this.table = findViewById(R.id.myDietDiariesTable);
         this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
         this.dietDiaries = ((DietDiariesObj) Objects.requireNonNull(

@@ -5,7 +5,6 @@ import com.fitastyclient.data_holders.DietDiary;
 import com.fitastyclient.data_holders.DishToInsert;
 import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.data_holders.SearchBody;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -58,6 +57,10 @@ public interface Api {
             @Query("username") String username
     );
 
+    @GET("/users/get_countries")
+    Call<ResponseBody> getCountries();
+
+
     // ====================================================
     // foods API
     // ====================================================
@@ -71,6 +74,7 @@ public interface Api {
     Call<ResponseBody> getFoods(
             @Query("include_dishes") boolean includeDishes,
             @Query("include_ingredients") boolean includeIngredients,
+            @Query("username") String username,
             @Body SearchBody searchBody
     );
 
@@ -122,14 +126,4 @@ public interface Api {
             @Query("username") String username,
             @Query("diet_diary_name") String dietDiaryName
     );
-
-    // ====================================================
-    // other
-    // ====================================================
-
-    @POST("/json_echo")
-    Call<ResponseBody> jsonEcho(
-            @Body DietDiary body
-    );
-
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
@@ -13,7 +12,7 @@ import com.fitastyclient.data_holders.DishToInsert;
 import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
-
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,9 +20,11 @@ import retrofit2.Response;
 
 public class AddDishActivity extends ItemsTableActivity {
 
-    static public String dishContentCantBeEmpty = "The dish content can't be empty.";
-    static public String nameAlreadyUsed = "There is already a dish with this name.";
-    static public String dishAdded = "Dish Added";
+    public static String dishContentCantBeEmpty = "The dish content can't be empty.";
+    public static String nameAlreadyUsed = "There is already a dish with this name.";
+    public static String dishAdded = "Dish Added";
+
+    private String username;
 
     protected BroadcastReceiver itemBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -54,9 +55,8 @@ public class AddDishActivity extends ItemsTableActivity {
 
     private View.OnClickListener itemsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent = getIntentWithBooleanFlag(AddDishActivity.this,
-                    SearchItemsActivity.class, Utils.IS_FOR_MEAL, false);
-            startActivity(intent);
+            tryToStartSearchItemsActivity(username, AddDishActivity.this, false,
+                    R.id.addDishButtonInfoText, null);
         }
     };
 
@@ -129,12 +129,21 @@ public class AddDishActivity extends ItemsTableActivity {
                 });
     }
 
+    private void setTableWidth() {
+        int screenWidth = getScreenWidth();
+        int tablesWidths = (int) (screenWidth * tableWidthPercent);
+        setViewWidth(R.id.itemsTableScrollView, tablesWidths);
+        setViewWidth(R.id.itemsTable, tablesWidths);
+    }
+
     private void setComponents() {
+        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
         this.typeFlag = Utils.DISH_FLAG;
         findViewById(R.id.addDishCancelButton).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.addNewDishButton).setOnClickListener(this.addButtonClick);
         findViewById(R.id.itemsTableAddButton).setOnClickListener(this.itemsTableAddButtonClick);
         setItemsTableComponents(R.id.itemsTable);
+        setTableWidth();
     }
 
     @Override

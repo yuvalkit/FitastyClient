@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +16,21 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
+import com.fitastyclient.data_holders.Account;
 import com.fitastyclient.data_holders.CalorieInfo;
-import com.fitastyclient.data_holders.DietDiariesObj;
+import com.fitastyclient.data_holders.CountriesObj;
 import com.fitastyclient.data_holders.Dish;
 import com.fitastyclient.data_holders.Ingredient;
+import com.fitastyclient.data_holders.Sensitivities;
 import com.fitastyclient.dialogs.DishInfoDialog;
 import com.fitastyclient.dialogs.IngredientInfoDialog;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,12 +38,17 @@ import retrofit2.Response;
 
 public abstract class MyAppCompatActivity extends AppCompatActivity {
 
-    static public String requiredField = "This field is required.";
-    static public String ingredientType = "Ingredient";
-    static public String dishType = "Dish";
-    static public String createText = "Create";
-    static public String addText = "Add";
-    static public String editText = "Edit";
+    public static String typeString = "Type";
+    public static String nameString = "Name";
+    public static String amountString = "Amount";
+    public static String requiredField = "This field is required.";
+    public static String ingredientType = "Ing";
+    public static String dishType = "Dish";
+    public static String createText = "Create";
+    public static String addText = "Add";
+    public static String editText = "Edit";
+
+    public static double tableWidthPercent = 0.9;
 
     protected View.OnClickListener cancelButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -96,6 +99,10 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         return ((CheckBox) findViewById(checkBoxId)).isChecked();
     }
 
+    protected void setCheckBox(int checkBoxId, boolean checked) {
+        ((CheckBox) findViewById(checkBoxId)).setChecked(checked);
+    }
+
     protected boolean isFieldEmptyQuery(int viewId, int InfoId) {
         String text = getTextFromView(viewId);
         if (text.isEmpty()) {
@@ -105,6 +112,12 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
             clearInformationText(InfoId);
             return false;
         }
+    }
+
+    protected int getScreenWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
     protected void setSpinner(Spinner spinner, int stringsArrayId, int selection_index) {
@@ -152,24 +165,34 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         setViewText(viewId, Utils.TEMP_FILLER);
     }
 
-    private int getCalorieInfoTableTextColor(boolean toColor, double value,
-                                                double threshold, int defaultColorId) {
-        return (toColor) ? (Utils.isValueInThresholdRange(value, threshold)
-                ? R.color.green : R.color.red) : defaultColorId;
+    private int getCalorieInfoTableTextColor(boolean toColor, double baseValue, double value,
+                                             int defaultColorId) {
+        if (toColor) {
+            double greenThreshold = baseValue * Utils.GREEN_THRESHOLD_PERCENT;
+            double grayThreshold = baseValue * Utils.GRAY_THRESHOLD_PERCENT;
+            if (Utils.isValueInThresholdRange(value, greenThreshold)) return R.color.green;
+            if (Utils.isValueInThresholdRange(value, grayThreshold)) return defaultColorId;
+            return R.color.red;
+        } else {
+            return defaultColorId;
+        }
     }
 
-    private void setViewWithValue(int viewId, double value, boolean toColor) {
+    private void setViewWithValue(int viewId, double baseValue, double value, boolean toColor,
+                                  int defaultColorId, String text) {
         setViewWithTempFiller(viewId);
-        int colorId = getCalorieInfoTableTextColor(toColor, value,
-                Utils.CALORIES_THRESHOLD, R.color.black);
-        setViewTextAndColor(viewId, Utils.cleanDoubleToString(value), colorId);
+        int colorId = getCalorieInfoTableTextColor(toColor, baseValue, value, defaultColorId);
+        setViewTextAndColor(viewId, text, colorId);
     }
 
-    private void setViewWithFact(int viewId, double value, boolean toColor) {
-        setViewWithTempFiller(viewId);
-        int colorId = getCalorieInfoTableTextColor(toColor, value,
-                Utils.NUTRITION_FACTS_THRESHOLD, R.color.gray);
-        setViewTextAndColor(viewId, Utils.cleanDoubleToString(value) + Utils.GRAM, colorId);
+    private void setViewWithCalorie(int viewId, double baseValue, double value, boolean toColor) {
+        String text = Utils.cleanDoubleToString(value);
+        setViewWithValue(viewId, baseValue, value, toColor, R.color.black, text);
+    }
+
+    private void setViewWithFact(int viewId, double baseValue, double value, boolean toColor) {
+        String text = Utils.cleanDoubleToString(value) + Utils.GRAM;
+        setViewWithValue(viewId, baseValue, value, toColor, R.color.gray, text);
     }
 
     protected Intent getIntentWithBooleanFlag(Context fromContext, Class<?> toClass,
@@ -209,12 +232,24 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         findViewById(viewId).setVisibility(visibility);
     }
 
+    protected void makeViewVisible(int viewId) {
+        setViewVisibility(viewId, View.VISIBLE);
+    }
+
     protected void makeViewInvisible(int viewId) {
         setViewVisibility(viewId, View.INVISIBLE);
     }
 
     protected void makeViewGone(int viewId) {
         setViewVisibility(viewId, View.GONE);
+    }
+
+    protected void setViewHeight(int viewId, int height) {
+        findViewById(viewId).getLayoutParams().height = height;
+    }
+
+    protected void setViewWidth(int viewId, int width) {
+        findViewById(viewId).getLayoutParams().width = width;
     }
 
     protected void displayAlertPopup(String titleText, String bodyText, int iconColorId,
@@ -231,7 +266,8 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
                         android.graphics.PorterDuff.Mode.SRC_IN);
     }
     protected void addInfoButtonToRow(TableRow row, final String itemName,
-                                      final boolean isIngredient, final int infoTextId) {
+                                      final boolean isIngredient, final int infoTextId,
+                                      boolean disableInfoButton) {
         int infoIconSize = 90;
         int infoIconLeftPadding = 10;
         ImageView view = getImageView(android.R.drawable.ic_dialog_info,
@@ -242,6 +278,7 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
                 getItemInfo(itemName, isIngredient, infoTextId);
             }
         });
+        if (disableInfoButton) view.setVisibility(View.INVISIBLE);
         row.addView(view);
     }
 
@@ -319,24 +356,108 @@ public abstract class MyAppCompatActivity extends AppCompatActivity {
         difference.setFat(fatDifference);
         difference.setProtein(proteinDifference);
 
-        setViewWithValue(recommendedCaloriesId, caloriesRecommended, false);
-        setViewWithValue(currentCaloriesId, currentCalories, false);
-        setViewWithValue(CaloriesDifferenceId, caloriesDifference, true);
+        setViewWithCalorie(recommendedCaloriesId, 0, caloriesRecommended, false);
+        setViewWithCalorie(currentCaloriesId, 0, currentCalories, false);
+        setViewWithCalorie(CaloriesDifferenceId, caloriesRecommended, caloriesDifference, true);
 
-        setViewWithFact(recommendedFatId, fatRecommended, false);
-        setViewWithFact(currentFatId, currentFat, false);
-        setViewWithFact(fatDifferenceId, fatDifference, true);
+        setViewWithFact(recommendedFatId, 0, fatRecommended, false);
+        setViewWithFact(currentFatId, 0, currentFat, false);
+        setViewWithFact(fatDifferenceId, fatRecommended, fatDifference, true);
 
-        setViewWithFact(recommendedCarbId, carbRecommended, false);
-        setViewWithFact(currentCarbId, currentCarb, false);
-        setViewWithFact(carbDifferenceId, carbDifference, true);
+        setViewWithFact(recommendedCarbId, 0, carbRecommended, false);
+        setViewWithFact(currentCarbId, 0, currentCarb, false);
+        setViewWithFact(carbDifferenceId, carbRecommended, carbDifference, true);
 
-        setViewWithFact(recommendedFiberId, fiberRecommended, false);
-        setViewWithFact(currentFiberId, currentFiber, false);
-        setViewWithFact(fiberDifferenceId, fiberDifference, true);
+        setViewWithFact(recommendedFiberId, 0, fiberRecommended, false);
+        setViewWithFact(currentFiberId, 0, currentFiber, false);
+        setViewWithFact(fiberDifferenceId, fiberRecommended, fiberDifference, true);
 
-        setViewWithFact(recommendedProteinId, proteinRecommended, false);
-        setViewWithFact(currentProteinId, currentProtein, false);
-        setViewWithFact(proteinDifferenceId, proteinDifference, true);
+        setViewWithFact(recommendedProteinId, 0, proteinRecommended, false);
+        setViewWithFact(currentProteinId, 0, currentProtein, false);
+        setViewWithFact(proteinDifferenceId, proteinRecommended, proteinDifference, true);
+    }
+
+    protected void startCreateEditAccountActivity(Context fromContext, CountriesObj countriesObj,
+                                                  boolean isCreateNew, Account account) {
+        Intent intent = getIntentWithBooleanFlag(fromContext, AccountActivity.class,
+                Utils.IS_CREATE_NEW_ACCOUNT, isCreateNew);
+        intent.putExtra(Utils.COUNTRIES_OBJ, countriesObj);
+        if (!isCreateNew) {
+            intent.putExtra(Utils.ACCOUNT, account);
+        }
+        startActivity(intent);
+    }
+
+    protected void tryToCreateEditAccount(final Context fromContext, final boolean isCreateNew,
+                                          final int errorInfoTextId, final Account account) {
+        Utils.getRetrofitApi().getCountries()
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            CountriesObj countriesObj = Utils.getResponseObject(
+                                    response, CountriesObj.class);
+                            if (countriesObj != null) {
+                                startCreateEditAccountActivity(fromContext, countriesObj,
+                                        isCreateNew, account);
+                            } else {
+                                displayActionFailed(errorInfoTextId);
+                            }
+                        } else {
+                            displayActionFailed(errorInfoTextId);
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call,
+                                          @NonNull Throwable t) {
+                        displayActionFailed(errorInfoTextId);
+                    }
+                });
+    }
+
+    protected void startSearchItemsActivity(Context fromContext, String username,
+                                            boolean isForMeal, Sensitivities sensitivities,
+                                            CalorieInfo differenceCalorieInfo) {
+        Intent intent = getIntentWithBooleanFlag(fromContext, SearchItemsActivity.class,
+                Utils.IS_FOR_MEAL, isForMeal);
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.USERNAME, username);
+        intent.putExtras(bundle);
+        intent.putExtra(Utils.SENSITIVITIES, sensitivities);
+        if (isForMeal) {
+            intent.putExtra(Utils.CALORIE_INFO, differenceCalorieInfo);
+        }
+        startActivity(intent);
+    }
+
+    protected void tryToStartSearchItemsActivity(final String username, final Context fromContext,
+                                                 final boolean isForMeal,
+                                                 final int errorInfoTextId,
+                                                 final CalorieInfo differenceCalorieInfo) {
+        Utils.getRetrofitApi().getAccountInformation(username)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call,
+                                           @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Account account = Utils.getResponseObject(response, Account.class);
+                            if (account != null) {
+                                Sensitivities sensitivities = account.getSensitivitiesFromAccount();
+                                startSearchItemsActivity(fromContext, username, isForMeal,
+                                        sensitivities, differenceCalorieInfo);
+                            } else {
+                                displayActionFailed(errorInfoTextId);
+                            }
+                        } else {
+                            displayActionFailed(errorInfoTextId);
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call,
+                                          @NonNull Throwable t) {
+                        displayActionFailed(errorInfoTextId);
+                    }
+                });
     }
 }

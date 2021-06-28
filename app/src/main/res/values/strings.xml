@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FitastyClient</string>
+    <string name="app_name">Fitasty</string>
 
     <!--  login_layout strings  -->
     <string name="username_text">Username:</string>
@@ -9,6 +9,7 @@
 
     <!--  main_menu_layout strings  -->
     <string name="new_ingredient_text">Add New Ingredient</string>
+    <string name="new_ingredient_new_line_text">Add New\nIngredient</string>
     <string name="new_dish_text">Add New Dish</string>
     <string name="my_diet_diaries_text">My Diet Diaries</string>
     <string name="settings_text">Settings</string>
@@ -26,9 +27,11 @@
     <string name="cm">cm</string>
     <string name="weight">Weight:</string>
     <string name="kg">kg</string>
+    <string name="country_text">Country:</string>
     <string name="activity_text">How active are you?</string>
     <string name="goal_text">What is your weight goal?</string>
     <string name="diet_type_text">What is your preferred diet type?</string>
+    <string name="sensitivities_text">Do you have any sensitivities?</string>
 
     <!--  add_dish_layout strings  -->
     <string name="dish_name">Dish name:</string>
@@ -49,7 +52,7 @@
     <string name="fiber_colon">Fiber:</string>
     <string name="protein_colon">Protein:</string>
     <string name="gram">g</string>
-    <string name="attributes">Attributes:</string>
+    <string name="sensitivities">Sensitivities:</string>
     <string name="vegan">Vegan</string>
     <string name="vegetarian">Vegetarian</string>
     <string name="gluten_free">Gluten-Free</string>
@@ -62,7 +65,7 @@
     <string name="ingredients">Ingredients</string>
     <string name="dishes">Dishes</string>
     <string name="type_to_search">Type to search…</string>
-    <string name="amount_max_explanation">The value written in the amount field is your recommended max amount for this item.</string>
+    <string name="amount_max_explanation">The value written in the amount field in the search table is your recommended max amount for that item.</string>
 
     <!--  settings_layout strings  -->
     <string name="edit_account">Edit Account</string>

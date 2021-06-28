@@ -7,13 +7,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.DietDiariesObj;
-
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +21,9 @@ public class MainMenuActivity extends MyAppCompatActivity {
 
     public static String hello = "Hello ";
     public static String dietDiariesError = "Failed getting diet diaries, please try again.";
+
+    public static double sidesMarginPercent = 0.1;
+    public static double betweenMarginPercent = 0.1;
 
     private String username;
 
@@ -47,7 +48,8 @@ public class MainMenuActivity extends MyAppCompatActivity {
     private View.OnClickListener addDishButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             clearMainMenuInfoText();
-            startActivity(new Intent(MainMenuActivity.this, AddDishActivity.class));
+            startActivity(Utils.getIntentWithUsername(MainMenuActivity.this,
+                    AddDishActivity.class, username));
         }
     };
 
@@ -115,11 +117,33 @@ public class MainMenuActivity extends MyAppCompatActivity {
         ((TextView) findViewById(R.id.helloText)).setText(helloText);
     }
 
+    private int calcButtonsDynamicSize(int screenWidth) {
+        int sidesMargin = (int) (screenWidth * sidesMarginPercent);
+        int betweenMargin = (int) (screenWidth * betweenMarginPercent);
+        return (int) ((screenWidth - (2 * sidesMargin) - betweenMargin) / 2.0);
+    }
+
+    private void setButtonSize(int buttonId, int size) {
+        setViewHeight(buttonId, size);
+        setViewWidth(buttonId, size);
+    }
+
+    private void setButtonsSize(int size) {
+        setButtonSize(R.id.myDietDiariesButton, size);
+        setButtonSize(R.id.addDishButton, size);
+        setButtonSize(R.id.addIngredientButton, size);
+        setButtonSize(R.id.settingsButton, size);
+    }
+
+    private void setButtonsDynamicSizes() {
+        int screenWidth = getScreenWidth();
+        int buttonsSize = calcButtonsDynamicSize(screenWidth);
+        setButtonsSize(buttonsSize);
+    }
+
     private void setComponents() {
-//        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
-
-        this.username = "123";
-
+        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
+        setButtonsDynamicSizes();
         findViewById(R.id.myDietDiariesButton).setOnClickListener(this.myDietDiariesButtonClick);
         findViewById(R.id.addDishButton).setOnClickListener(this.addDishButtonClick);
         findViewById(R.id.addIngredientButton).setOnClickListener(this.addIngredientButtonClick);

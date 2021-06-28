@@ -3,7 +3,6 @@ package com.fitastyclient.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -55,6 +54,7 @@ public class NutritionFactsFilterDialog extends MyDialogFragment {
         changeViewVisibility(R.id.filterIsPerServingText, visibility);
         changeViewVisibility(R.id.minMaxAmountInfoText, visibility);
         changeViewVisibility(R.id.leaveEmptyForNoFilterText, visibility);
+        changeViewVisibility(R.id.dietDiarySearchTableAmountText, visibility);
     }
 
     private void setViewDoubleWithNulls(int viewId, Double value) {

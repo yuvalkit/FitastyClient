@@ -8,7 +8,6 @@ import com.fitastyclient.R;
 import com.fitastyclient.Utils;
 import com.fitastyclient.data_holders.Ingredient;
 
-
 public class IngredientInfoDialog extends MyDialogFragment {
 
     private Ingredient ingredient;

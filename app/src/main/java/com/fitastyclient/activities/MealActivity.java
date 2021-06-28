@@ -16,7 +16,6 @@ import com.fitastyclient.data_holders.ShortDish;
 import com.fitastyclient.data_holders.ShortIngredient;
 import java.util.List;
 import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,9 +26,12 @@ public class MealActivity extends ItemsTableActivity {
     public static String addMealTitle = "Add Meal %d";
     public static String editMealTitle = "Edit Meal %d";
     public static String mealInfoTitle = "Meal %d Information";
-    static public String mealContentCantBeEmpty = "The meal content can't be empty.";
-    static public String noMealChanges = "Can't edit meal if there are no changes.";
+    public static String mealContentCantBeEmpty = "The meal content can't be empty.";
+    public static String noMealChanges = "Can't edit meal if there are no changes.";
 
+    public static double tablesWidthPercent = 0.9;
+
+    private String username;
     private Utils.ActivityType activityType;
     private int mealId;
     private Meal meal;
@@ -70,10 +72,8 @@ public class MealActivity extends ItemsTableActivity {
     private View.OnClickListener itemsTableAddButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             clearInfoTexts();
-            Intent intent = getIntentWithBooleanFlag(MealActivity.this,
-                    SearchItemsActivity.class, Utils.IS_FOR_MEAL, true);
-            intent.putExtra(Utils.CALORIE_INFO, differenceCalorieInfo);
-            startActivity(intent);
+            tryToStartSearchItemsActivity(username, MealActivity.this, true,
+                    R.id.mealItemsTableInfoText, differenceCalorieInfo);
         }
     };
 
@@ -307,7 +307,16 @@ public class MealActivity extends ItemsTableActivity {
         makeViewInvisible(R.id.addEditMealButton);
     }
 
+    private void setTablesWidths() {
+        int screenWidth = getScreenWidth();
+        int tablesWidths = (int) (screenWidth * tablesWidthPercent);
+        setViewWidth(R.id.mealItemsTableScrollView, tablesWidths);
+        setViewWidth(R.id.mealItemsTable, tablesWidths);
+        setViewWidth(R.id.mealCalorieInfoTableHorizontalScrollView, tablesWidths);
+    }
+
     private void setComponents() {
+        this.username = Objects.requireNonNull(getIntent().getExtras()).getString(Utils.USERNAME);
         this.typeFlag = Utils.MEAL_FLAG;
         findViewById(R.id.addMealCancelIcon).setOnClickListener(this.cancelButtonClick);
         findViewById(R.id.addEditMealButton).setOnClickListener(this.addEditButtonClick);
@@ -316,6 +325,7 @@ public class MealActivity extends ItemsTableActivity {
         findViewById(R.id.mealItemsTableAddButton)
                 .setOnClickListener(this.itemsTableAddButtonClick);
         setItemsTableComponents(R.id.mealItemsTable);
+        setTablesWidths();
         this.activityType = (Utils.ActivityType)
                 getIntent().getSerializableExtra(Utils.MEAL_ACTIVITY_TYPE);
         this.mealId = Objects.requireNonNull(getIntent().getExtras()).getInt(Utils.MEAL_ID);

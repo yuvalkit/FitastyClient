@@ -7,9 +7,6 @@ import com.fitastyclient.data_holders.NameExistObj;
 import com.fitastyclient.data_holders.Ingredient;
 import com.fitastyclient.R;
 import com.fitastyclient.Utils;
-
-import java.util.jar.Attributes;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,12 +14,12 @@ import retrofit2.Response;
 
 public class AddIngredientActivity extends MyAppCompatActivity {
 
-    static public String requiredFields = "These fields are required.";
-    static public String maximumSum = "These fields maximum sum is 100g.";
-    static public String ingredientAdded = "Ingredient Added";
-    static public String ingredientAdditionFailed = "Failed adding ingredient, please try again.";
-    static public String nameAlreadyUsed = "There is already an ingredient with this name.";
-    static public int maxFactsSum = 100;
+    public static String requiredFields = "These fields are required.";
+    public static String maximumSum = "These fields maximum sum is 100g.";
+    public static String ingredientAdded = "Ingredient Added";
+    public static String ingredientAdditionFailed = "Failed adding ingredient, please try again.";
+    public static String nameAlreadyUsed = "There is already an ingredient with this name.";
+    public static int maxFactsSum = 100;
 
     private View.OnClickListener addButtonClick = new View.OnClickListener() {
         public void onClick(View v) {

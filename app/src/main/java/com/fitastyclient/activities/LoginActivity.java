@@ -1,7 +1,6 @@
 package com.fitastyclient.activities;
 
 import androidx.annotation.NonNull;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,9 +14,9 @@ import retrofit2.Response;
 
 public class LoginActivity extends MyAppCompatActivity {
 
-    static public String mustEnterFields = "You must enter username and password.";
-    static public String loginFailed = "Login failed, please try again.";
-    static public String wrongFields = "Wrong username or password.";
+    public static String mustEnterFields = "You must enter username and password.";
+    public static String loginFailed = "Login failed, please try again.";
+    public static String wrongFields = "Wrong username or password.";
 
     private View.OnClickListener loginButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -31,9 +30,7 @@ public class LoginActivity extends MyAppCompatActivity {
     private View.OnClickListener newAccountButtonClick = new View.OnClickListener() {
         public void onClick(View v) {
             clearLoginInfoText();
-            Intent intent = getIntentWithBooleanFlag(LoginActivity.this,
-                    AccountActivity.class, Utils.IS_CREATE_NEW_ACCOUNT, true);
-            startActivity(intent);
+            tryToCreateEditAccount(LoginActivity.this, true, R.id.newAccountInformationText, null);
         }
     };
 
