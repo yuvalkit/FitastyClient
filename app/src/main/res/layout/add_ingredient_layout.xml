@@ -41,8 +41,9 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="198dp"
-            android:text="@string/vegan"
             android:buttonTint="@color/darkBlue"
+            android:checked="true"
+            android:text="@string/vegan"
             app:layout_constraintBottom_toTopOf="@+id/addNewIngredientButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -58,6 +59,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="198dp"
             android:buttonTint="@color/darkBlue"
+            android:checked="true"
             android:text="@string/lactose_free"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,13 +75,13 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="198dp"
-            android:text="@string/gluten_free"
             android:buttonTint="@color/darkBlue"
+            android:checked="true"
+            android:text="@string/gluten_free"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/veganCheckBox"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/veganCheckBox" />
 
         <CheckBox
             android:id="@+id/vegetarianCheckBox"
@@ -89,6 +91,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="198dp"
             android:buttonTint="@color/darkBlue"
+            android:checked="true"
             android:text="@string/vegetarian"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
